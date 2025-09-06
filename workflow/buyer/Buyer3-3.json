@@ -1,0 +1,1576 @@
+{
+  "name": "Buyer3-3",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "search",
+        "query": "={{ `SELECT Name, Account.Name, Email FROM Contact WHERE Name='${$(\"Iterate Rows\").first().json.firstName.replace(/'/g, \"''\")} ${$(\"Iterate Rows\").first().json.lastName.replace(/'/g, \"''\")}' AND Account.Name='${$(\"Iterate Rows\").first().json.companyName.replace(/'/g, \"''\")}'` }}"
+      },
+      "name": "Check Salesforce Duplicates",
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        -3440,
+        2512
+      ],
+      "id": "59648402-265a-4c3c-9614-943c68f0cf84",
+      "alwaysOutputData": true,
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "2m21xiE5GUhVkcbI",
+          "name": "Salesforce account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "functionCode": "return $items('Deduplication').map(item => {\n  const profile = item.json;\n\n  return {\n    json: {\n      firstName: profile.firstName,\n      lastName: profile.lastName,\n      headline: profile.headline,\n      jobTitle: profile.jobTitle,\n      companyName: profile.companyName,\n      companyWebsite: profile.companyWebsite,\n      location: profile.location,\n      skills: profile.skills,\n      positions: profile.positions,\n      publicUrl: profile.publicUrl,\n      summary: profile?.summary\n    }\n  };\n});"
+      },
+      "id": "bdc86902-0e91-4896-abff-263cb3df6e94",
+      "name": "Filter Fields",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -2544,
+        2496
+      ],
+      "alwaysOutputData": false,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.confiendce >= 7 }}",
+                    "rightValue": "true",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "5c0e5102-04d0-4fcf-aaf8-3e6854c792de"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "929d8ee1-006d-4e84-9113-10ad56d48b38",
+                    "leftValue": "={{$json.confiendce > 4 && $json.confiendce < 7}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ca7895af-4d37-44e7-8f35-ce17b35e90dd",
+                    "leftValue": "={{$json.confiendce > 4}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1520,
+        2496
+      ],
+      "id": "b86caa28-43d4-40e6-b074-2198ef9b4f3c",
+      "name": "Switch",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "apiKey",
+        "url": "https://api.mailjet.com/v3.1/send",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "Send Nurture Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        2608
+      ],
+      "id": "19ac243f-d574-4c84-b419-51e65d69bb1d",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1744,
+        2496
+      ],
+      "id": "18207739-c582-4e43-8a02-1ac65f27041e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-2024-11-20",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-2024-11-20"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ 'Evaluate this individual’s suitability for an invitation to the Augmented Enterprise Summit 2025 — a leading event for enterprise professionals leveraging XR (AR/VR/MR), AI, spatial computing, and digital twins in industries like manufacturing, healthcare, energy, aerospace, logistics, and automotive. Ideal attendees are decision-makers or influencers involved in digital transformation, innovation, L&D, field operations, or tech strategy. The individual must work at a company that is *not* a software provider, professional services firm, or financial services company. The company must be a non-tech enterprise using technology to transform operations — not selling it. Evaluate strictly: only score high if both the individual and their company clearly align with these criteria. Based *only* on the LinkedIn and company data below, return a single number from 1 to 10 indicating their fit (10 = perfect fit, 1 = not relevant). Profile:'+ JSON.stringify($node['Filter Fields'].json) + 'Return your evaluation in the following JSON format: { \"Confidence\": [1–10], \"Explanation\": \"[a short justification]\" }' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -2320,
+        2608
+      ],
+      "id": "36283b9f-df81-4ece-8c1a-591809baef92",
+      "name": "Message a model",
+      "alwaysOutputData": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "F4kiH0p8ZoF3tKAb",
+          "name": "OpenAi account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 318332948,
+          "mode": "list",
+          "cachedResultName": "GPT evaluation-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=318332948"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "profile",
+              "displayName": "profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confiendce",
+              "displayName": "confiendce",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "explanation",
+              "displayName": "explanation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pairedItem",
+              "displayName": "pairedItem",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1296,
+        2208
+      ],
+      "id": "1c33476d-bfdd-42e2-95ff-5e899d562d49",
+      "name": "Profile Analysis Report",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "httpMethod": "POST",
+        "limitWaitTime": true,
+        "resumeAmount": 5,
+        "resumeUnit": "minutes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1072,
+        2416
+      ],
+      "id": "e8a80ada-a0d7-4de8-9acf-ab136d3d1694",
+      "name": "Wait",
+      "webhookId": "a1a75244-deb2-45e0-a5b1-062488ce2a07"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 647093161,
+          "mode": "list",
+          "cachedResultName": "Suitable Lead-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=647093161"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LinkedInUrl",
+              "displayName": "LinkedInUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -400,
+        2240
+      ],
+      "id": "73edaa5b-9cde-4c2b-ad13-fb67a7c9db7d",
+      "name": "Suitable lead",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// const inputProfiles = $items(\"Iterate Rows\");\nconst mergeOutput = $input.all().map(item => item.json);\n\nconst inputProfiles = mergeOutput.slice(0, 1);\nconst salesforceProfiles = mergeOutput.slice(1);\n\n// Prepare normalized Salesforce entries as array of objects\nconst salesforceEntries = salesforceProfiles.map(p => ({\n  name: (p.Name || '').toLowerCase().trim(),\n  company: (p.Account?.Name || '').toLowerCase().trim(),\n}));\n\n// Filter inputProfiles: keep only those NOT matching Salesforce on company and partial name\nconst uniqueProfiles = inputProfiles.filter(profile => {\n  const firstName = (profile.firstName || '').toLowerCase().trim();\n  const lastName = (profile.lastName || '').toLowerCase().trim();\n  const company = (profile.companyName || '').toLowerCase().trim();\n\n  // If company is missing, consider no match\n  if (!company) return true;\n\n  // Check if any Salesforce entry matches company exactly AND includes first or last name\n  const isDuplicate = salesforceEntries.some(sf => {\n    if (sf.company !== company) return false;\n    // Check if Salesforce Name includes either firstName or lastName (partial match)\n    return (firstName && sf.name.includes(firstName)) || (lastName && sf.name.includes(lastName));\n  });\n\n  // Keep only profiles NOT duplicates\n  return !isDuplicate;\n});\n\nreturn uniqueProfiles;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2992,
+        2496
+      ],
+      "id": "14acd77d-0eaf-4d79-9fae-0f4323eafb1a",
+      "name": "Deduplication",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -3216,
+        2496
+      ],
+      "id": "5420180e-4379-4955-9cb8-2d31a482f3ed",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bdc14852-cbf9-4c70-a522-5b7afd6b1749",
+              "name": "profile",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1968,
+        2320
+      ],
+      "id": "ff9200c8-ed72-4de6-898b-3ebe09406a72",
+      "name": "Profile Field"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c521f619-f5aa-4672-8c2b-9b2bf29213a9",
+              "name": "confiendce",
+              "value": "={{ $json.message.content.replace(\"```json\", \"\").replace(\"```\", \"\").parseJson().Confidence }}",
+              "type": "number"
+            },
+            {
+              "id": "c4871039-2877-4f09-83ee-aa0d010bbaca",
+              "name": "explanation",
+              "value": "={{ $json.message.content.replace(\"```json\", \"\").replace(\"```\", \"\").parseJson().Explanation }}",
+              "type": "string"
+            },
+            {
+              "id": "e00e3779-3e0d-4fea-81d3-19f3fa894142",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1968,
+        2608
+      ],
+      "id": "e0a3c29e-73f7-43f8-9fcf-dc4bcf219338",
+      "name": "Evaluation Field",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1520,
+        2208
+      ],
+      "id": "2ebbe419-2a91-42d6-a1cb-869ddf8897b4",
+      "name": "Wait1",
+      "webhookId": "e55cdbb8-74fc-4b0c-bd48-fa68a342b25e"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "26468819-e602-461f-9384-68e515b4fb8a",
+              "leftValue": "={{ $input.all()[0].json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2768,
+        2496
+      ],
+      "id": "1911f56c-c458-4c01-a29b-ea014e8eca49",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -624,
+        2240
+      ],
+      "id": "c4d1b56e-9fdb-4ca6-84c5-7e20fc7124d9",
+      "name": "Wait2",
+      "webhookId": "62bbaf0e-1d05-4943-a999-c45687e55f0b"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-0f886f1b-2da2-401e-9c97-a3abd7fcfa22",
+        "responseFormat": "string",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "fullName",
+              "value": "={{ $json.profile.firstName + ' ' +  $json.profile.lastName }}"
+            },
+            {
+              "name": "companyDomain",
+              "value": "={{ $json.profile.companyWebsite }}"
+            },
+            {
+              "name": "companyName",
+              "value": "={{ $json.profile.companyName }}"
+            },
+            {
+              "name": "linkedInUrl",
+              "value": "={{ $json.profile.publicUrl }}"
+            },
+            {
+              "name": "resumeUrl",
+              "value": "={{ $execution.resumeUrl }}"
+            },
+            {
+              "name": "firstName",
+              "value": "={{ $json.profile.firstName }}"
+            },
+            {
+              "name": "lastName",
+              "value": "={{ $json.profile.lastName }}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "ee48908bb8fdbaf895b0"
+            }
+          ]
+        }
+      },
+      "name": "Enrich with Clay",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1296,
+        2416
+      ],
+      "id": "634fa126-3cdf-4664-9409-7f9a21d08a6f",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open-api.saleshandy.com/v1/sequences/prospects/import-with-field-name",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "873a16708004a8b459147f027050fcf5"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prospectList\": [\n    {\n      \"First Name\": \"{{ $json.firstName.replaceAll(\"\\\"\", \"\\'\") }}\",\n      \"Last Name\": \"{{ $json.lastName.replaceAll(\"\\\"\", \"\\'\") }}\",\n      \"Company\": \"{{ $json.company.replaceAll(\"\\\"\", \"\\'\") }}\",\n      \"Email\": \"{{ $json.email }}\",\n      \"LinkedIn\": \"{{ $json.LinkedInUrl }}\"\n    }\n  ],\n  \"stepId\": \"3RPnjverPr\",\n  \"verifyProspects\": true,\n  \"conflictAction\": \"overwrite\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        2848
+      ],
+      "id": "6794abcd-e454-4d74-9a06-be7ec46316f6",
+      "name": "Add prospects to Saleshandy",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bdc14852-cbf9-4c70-a522-5b7afd6b1749",
+              "name": "firstName",
+              "value": "={{ $json.body.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "f72f300e-02bb-4eec-a851-f6799efaf1b1",
+              "name": "lastName",
+              "value": "={{ $json.body.lastName }}",
+              "type": "string"
+            },
+            {
+              "id": "9d1b83de-6e8a-4600-89ca-0f6a37bb8862",
+              "name": "company",
+              "value": "={{ $json.body.company }}",
+              "type": "string"
+            },
+            {
+              "id": "c521f619-f5aa-4672-8c2b-9b2bf29213a9",
+              "name": "email",
+              "value": "={{ $json.body.email.split('|')[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "3679dcf4-379e-4d1e-8343-7f9aadaab8bf",
+              "name": "LinkedInUrl",
+              "value": "={{ $json.body.LinkedIn }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -848,
+        2416
+      ],
+      "id": "f529f8dd-cbc5-4f1f-a589-f7da6b7a5d6e",
+      "name": "Prospect",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Buyer 3-3 is ended - ' + $input.all().length }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3664,
+        2704
+      ],
+      "id": "b53dd5de-6fc6-42f2-86b9-7cd778b74b54",
+      "name": "Send a text message",
+      "webhookId": "dc66dbec-055c-4ab4-ad13-b350a5e2c29f",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -400,
+        2480
+      ],
+      "id": "8132ec94-5e44-48d0-8d3e-0de379426ce4",
+      "name": "Merge2",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all().map(item => item.json);\n\nreturn input[0];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        2480
+      ],
+      "id": "310fdce5-99dc-4af8-b797-0e8284b95722",
+      "name": "Clean Data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "26468819-e602-461f-9384-68e515b4fb8a",
+              "leftValue": "={{ $input.all()[1].json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "43ccc07a-1c08-402b-9744-c69e51a238b5",
+              "leftValue": "={{ $input.all()[0].json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -176,
+        2480
+      ],
+      "id": "2c566216-5cb2-4549-a19f-2918b75b4ba8",
+      "name": "Check the Lead",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "search",
+        "query": "={{ `SELECT Name, Account.Name, Email FROM Contact WHERE Email='${$json.email}'` }}"
+      },
+      "name": "Check Salesforce Duplicates with Email",
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        2576
+      ],
+      "id": "759e02f2-407d-401b-aa46-ef3e6121ceb3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "2m21xiE5GUhVkcbI",
+          "name": "Salesforce account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1309925679,
+          "mode": "list",
+          "cachedResultName": "3-Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=1309925679"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4560,
+        2752
+      ],
+      "id": "1b7a7698-c97d-4fb4-9d92-c18d6570f849",
+      "name": "Get the profiles",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -3888,
+        2848
+      ],
+      "id": "e1d52068-5b75-4268-bf4d-ac53eb0fce88",
+      "name": "Iterate Rows"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1309925679,
+          "mode": "list",
+          "cachedResultName": "3-Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=1309925679"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "publicUrl": "={{ $json.publicUrl }}",
+            "check": "TRUE"
+          },
+          "matchingColumns": [
+            "publicUrl"
+          ],
+          "schema": [
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "position",
+              "displayName": "position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "publicUrl",
+              "displayName": "publicUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "companyWebsite",
+              "displayName": "companyWebsite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "jobTitle",
+              "displayName": "jobTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "check",
+              "displayName": "check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3664,
+        2512
+      ],
+      "id": "1f3a57ca-a90b-4831-a965-8b12ffc6a6cd",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {},
+            {
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 1,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 6
+            },
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 8
+            },
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 14
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 16
+            },
+            {
+              "triggerAtHour": 16,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 18
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 20
+            },
+            {
+              "triggerAtHour": 20,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 21,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 22
+            },
+            {
+              "triggerAtHour": 22,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -4784,
+        2752
+      ],
+      "id": "74cdd6bc-49af-4278-a9eb-78394f3a493b",
+      "name": "Schedule Trigger7"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Buyer 3-3 Started: ' + $input.all().length + ' - ' + $('Schedule Trigger7').item.json['Day of month'] + \"-\" + $('Schedule Trigger7').item.json.Hour + \"-\" + $('Schedule Trigger7').item.json.Minute }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -4112,
+        2656
+      ],
+      "id": "a4b5e562-87c5-4ced-a1ae-3ea5333d7823",
+      "name": "Send a text message1",
+      "webhookId": "dc66dbec-055c-4ab4-ad13-b350a5e2c29f",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().slice(0, 50);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4112,
+        2848
+      ],
+      "id": "d7ff9840-e60e-4250-a455-c09f836104d3",
+      "name": "Get 50 profiles"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the field you want to check is called \"check\"\nreturn $input.all().filter(item => {\n  return !item.json.check || String(item.json.check).trim() === \"\";\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4336,
+        2752
+      ],
+      "id": "8de6107a-0b82-4e44-b00e-99a3125b9a6e",
+      "name": "Filter"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check Salesforce Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Profile Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Enrich with Clay",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Nurture Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Nurture Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Evaluation Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplication": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Suitable lead": {
+      "main": [
+        []
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Deduplication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Profile Field": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluation Field": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Profile Analysis Report": {
+      "main": [
+        []
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Profile Analysis Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Iterate Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Nurture Email": {
+      "main": [
+        [
+          {
+            "node": "Iterate Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Suitable lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich with Clay": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prospect": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Salesforce Duplicates with Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add prospects to Saleshandy": {
+      "main": [
+        [
+          {
+            "node": "Iterate Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Check the Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the Lead": {
+      "main": [
+        [
+          {
+            "node": "Clean Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Iterate Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Salesforce Duplicates with Email": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Clean Data": {
+      "main": [
+        [
+          {
+            "node": "Add prospects to Saleshandy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the profiles": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Iterate Rows": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Check Salesforce Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger7": {
+      "main": [
+        [
+          {
+            "node": "Get the profiles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get 50 profiles": {
+      "main": [
+        [
+          {
+            "node": "Iterate Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Get 50 profiles",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3c48c251-32ec-40ed-931c-a40d272948a2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf120ca0326fba41d4221ee0c421c0c2c8d9d27024ef91245df4c38c9cc2cf2b"
+  },
+  "id": "XUUKeslhP4Osv5sM",
+  "tags": []
+}

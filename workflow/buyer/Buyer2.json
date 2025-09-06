@@ -1,0 +1,2349 @@
+{
+  "name": "Buyer2",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "search",
+        "query": "={{ `SELECT Name, Account.Name, Email FROM Contact WHERE Name='${$json.firstName.replace(/'/g, \"''\")} ${$json.lastName.replace(/'/g, \"''\")}' AND Account.Name='${$json.companyName.replace(/'/g, \"''\")}'` }}"
+      },
+      "name": "Check Salesforce Duplicates",
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        240,
+        528
+      ],
+      "id": "e4020087-8a9c-4543-b7de-56464cd198f6",
+      "alwaysOutputData": true,
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "2m21xiE5GUhVkcbI",
+          "name": "Salesforce account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "functionCode": "return $items('Deduplication').map(item => {\n  const profile = item.json;\n\n  return {\n    json: {\n      firstName: profile.firstName,\n      lastName: profile.lastName,\n      headline: profile.headline,\n      jobTitle: profile.jobTitle,\n      companyName: profile.companyName,\n      companyWebsite: profile.companyWebsite,\n      location: profile.location,\n      skills: profile.skills,\n      positions: profile.positions,\n      publicUrl: profile.publicUrl,\n      summary: profile?.summary\n    }\n  };\n});"
+      },
+      "id": "55d3c60a-83f5-4dc6-9cb9-5c2df1e21e8b",
+      "name": "Filter Fields",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        320
+      ],
+      "alwaysOutputData": false,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.confiendce >= 7 }}",
+                    "rightValue": "true",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "5c0e5102-04d0-4fcf-aaf8-3e6854c792de"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "929d8ee1-006d-4e84-9113-10ad56d48b38",
+                    "leftValue": "={{$json.confiendce > 4 && $json.confiendce < 7}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ca7895af-4d37-44e7-8f35-ce17b35e90dd",
+                    "leftValue": "={{$json.confiendce > 4}}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2208,
+        416
+      ],
+      "id": "d2deecf8-a015-442f-8c51-eaf61665d025",
+      "name": "Switch",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "apiKey",
+        "url": "https://api.mailjet.com/v3.1/send",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "Send Nurture Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        528
+      ],
+      "id": "7a476626-0f7d-4d80-9849-70d327c902c8",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1984,
+        320
+      ],
+      "id": "a0331d8c-8d65-416f-9675-b89edb073793",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-2024-11-20",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-2024-11-20"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ 'Evaluate this individual’s suitability for an invitation to the Augmented Enterprise Summit 2025 — a leading event for enterprise professionals leveraging XR (AR/VR/MR), AI, spatial computing, and digital twins in industries like manufacturing, healthcare, energy, aerospace, logistics, and automotive. Ideal attendees are decision-makers or influencers involved in digital transformation, innovation, L&D, field operations, or tech strategy. The individual must work at a company that is *not* a software provider, professional services firm, or financial services company. The company must be a non-tech enterprise using technology to transform operations — not selling it. Evaluate strictly: only score high if both the individual and their company clearly align with these criteria. Based *only* on the LinkedIn and company data below, return a single number from 1 to 10 indicating their fit (10 = perfect fit, 1 = not relevant). Profile:'+ JSON.stringify($node['Filter Fields'].json) + 'Return your evaluation in the following JSON format: { \"Confidence\": [1–10], \"Explanation\": \"[a short justification]\" }' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1360,
+        528
+      ],
+      "id": "9d68c2dc-9767-4dca-b1bf-90bed8467558",
+      "name": "Message a model",
+      "alwaysOutputData": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "F4kiH0p8ZoF3tKAb",
+          "name": "OpenAi account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 318332948,
+          "mode": "list",
+          "cachedResultName": "GPT evaluation-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=318332948"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2432,
+        128
+      ],
+      "id": "b41cc1c2-921d-4555-ad6d-fcb888b636cc",
+      "name": "Profile Analysis Report",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "httpMethod": "POST",
+        "limitWaitTime": true,
+        "resumeAmount": 5,
+        "resumeUnit": "minutes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2656,
+        336
+      ],
+      "id": "6199e794-61e1-4960-999b-e6ab9d2c4a33",
+      "name": "Wait",
+      "webhookId": "966c56ae-28e5-4e85-9e7b-8899a9688a90"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 647093161,
+          "mode": "list",
+          "cachedResultName": "Suitable Lead-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=647093161"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3328,
+        288
+      ],
+      "id": "e0d41822-0d5a-4809-ab96-a88a21276645",
+      "name": "Suitable lead",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// const inputProfiles = $items(\"SplitInBatches\");\nconst mergeOutput = $input.all().map(item => item.json);\n\nconst inputProfiles = mergeOutput.slice(0, 1);\nconst salesforceProfiles = mergeOutput.slice(1);\n\n// Prepare normalized Salesforce entries as array of objects\nconst salesforceEntries = salesforceProfiles.map(p => ({\n  name: (p.Name || '').toLowerCase().trim(),\n  company: (p.Account?.Name || '').toLowerCase().trim(),\n}));\n\n// Filter inputProfiles: keep only those NOT matching Salesforce on company and partial name\nconst uniqueProfiles = inputProfiles.filter(profile => {\n  const firstName = (profile.firstName || '').toLowerCase().trim();\n  const lastName = (profile.lastName || '').toLowerCase().trim();\n  const company = (profile.companyName || '').toLowerCase().trim();\n\n  // If company is missing, consider no match\n  if (!company) return true;\n\n  // Check if any Salesforce entry matches company exactly AND includes first or last name\n  const isDuplicate = salesforceEntries.some(sf => {\n    if (sf.company !== company) return false;\n    // Check if Salesforce Name includes either firstName or lastName (partial match)\n    return (firstName && sf.name.includes(firstName)) || (lastName && sf.name.includes(lastName));\n  });\n\n  // Keep only profiles NOT duplicates\n  return !isDuplicate;\n});\n\nreturn uniqueProfiles;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        320
+      ],
+      "id": "8c64c90f-8dac-4359-bf7a-be4953394283",
+      "name": "Deduplication",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        16,
+        720
+      ],
+      "id": "15a70889-037b-4ac1-a294-16032131a67a",
+      "name": "SplitInBatches"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        464,
+        320
+      ],
+      "id": "a07f5366-2c83-4ccc-9a46-bf022fda2a5e",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bdc14852-cbf9-4c70-a522-5b7afd6b1749",
+              "name": "profile",
+              "value": "={{ $json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        224
+      ],
+      "id": "7f577558-f2d8-4404-b8a0-06ff723c91a2",
+      "name": "Profile Field"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c521f619-f5aa-4672-8c2b-9b2bf29213a9",
+              "name": "confiendce",
+              "value": "={{ $json.message.content.replace(\"```json\", \"\").replace(\"```\", \"\").parseJson().Confidence }}",
+              "type": "number"
+            },
+            {
+              "id": "c4871039-2877-4f09-83ee-aa0d010bbaca",
+              "name": "explanation",
+              "value": "={{ $json.message.content.replace(\"```json\", \"\").replace(\"```\", \"\").parseJson().Explanation }}",
+              "type": "string"
+            },
+            {
+              "id": "e00e3779-3e0d-4fea-81d3-19f3fa894142",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        528
+      ],
+      "id": "d433d5bf-bc13-4cad-ac47-8f6a1894d7f9",
+      "name": "Evaluation Field",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2208,
+        128
+      ],
+      "id": "3cd688e3-7f08-4218-8fc6-17ec06a9de28",
+      "name": "Wait1",
+      "webhookId": "310ec85f-2f1c-458d-b4c7-e88560aa5fb1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "26468819-e602-461f-9384-68e515b4fb8a",
+              "leftValue": "={{ $input.all()[0].json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        320
+      ],
+      "id": "473578ff-dfa0-4f47-8a82-8a1547a15dad",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3104,
+        288
+      ],
+      "id": "83408f2a-3c6a-4eb8-a06c-b7f751f62889",
+      "name": "Wait2",
+      "webhookId": "7675d023-9161-46be-9093-a841c1907def"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.clay.com/v3/sources/webhook/pull-in-data-from-a-webhook-0f886f1b-2da2-401e-9c97-a3abd7fcfa22",
+        "responseFormat": "string",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "fullName",
+              "value": "={{ $json.profile.firstName + ' ' +  $json.profile.lastName }}"
+            },
+            {
+              "name": "companyDomain",
+              "value": "={{ $json.profile.companyWebsite }}"
+            },
+            {
+              "name": "companyName",
+              "value": "={{ $json.profile.companyName }}"
+            },
+            {
+              "name": "linkedInUrl",
+              "value": "={{ $json.profile.publicUrl }}"
+            },
+            {
+              "name": "resumeUrl",
+              "value": "={{ $execution.resumeUrl }}"
+            },
+            {
+              "name": "firstName",
+              "value": "={{ $json.profile.firstName }}"
+            },
+            {
+              "name": "lastName",
+              "value": "={{ $json.profile.lastName }}"
+            }
+          ]
+        },
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "ee48908bb8fdbaf895b0"
+            }
+          ]
+        }
+      },
+      "name": "Enrich with Clay",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        336
+      ],
+      "id": "90e317a9-fede-41db-bde6-d2a283a19794",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open-api.saleshandy.com/v1/sequences/prospects/import-with-field-name",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "873a16708004a8b459147f027050fcf5"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prospectList\": [\n    {\n      \"First Name\": \"{{ $json.firstName.replaceAll(\"\\\"\", \"\\'\") }}\",\n      \"Last Name\": \"{{ $json.lastName.replaceAll(\"\\\"\", \"\\'\") }}\",\n      \"Company\": \"{{ $json.company.replaceAll(\"\\\"\", \"\\'\") }}\",\n      \"Email\": \"{{ $json.email }}\",\n      \"LinkedIn\": \"{{ $json.LinkedInUrl }}\"\n    }\n  ],\n  \"stepId\": \"3RPnjverPr\",\n  \"verifyProspects\": true,\n  \"conflictAction\": \"overwrite\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4128,
+        624
+      ],
+      "id": "6638bf0c-56c0-4ea3-a2a5-0eabc1beb262",
+      "name": "Add prospects to Saleshandy",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bdc14852-cbf9-4c70-a522-5b7afd6b1749",
+              "name": "firstName",
+              "value": "={{ $json.body.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "f72f300e-02bb-4eec-a851-f6799efaf1b1",
+              "name": "lastName",
+              "value": "={{ $json.body.lastName }}",
+              "type": "string"
+            },
+            {
+              "id": "9d1b83de-6e8a-4600-89ca-0f6a37bb8862",
+              "name": "company",
+              "value": "={{ $json.body.company }}",
+              "type": "string"
+            },
+            {
+              "id": "c521f619-f5aa-4672-8c2b-9b2bf29213a9",
+              "name": "email",
+              "value": "={{ $json.body.email.split('|')[0].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "3679dcf4-379e-4d1e-8343-7f9aadaab8bf",
+              "name": "LinkedInUrl",
+              "value": "={{ $json.body.LinkedIn }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2880,
+        336
+      ],
+      "id": "6ea826c4-ca7e-4324-beef-34552bf3d9fc",
+      "name": "Prospect",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            },
+            {
+              "triggerAtHour": 11
+            },
+            {
+              "triggerAtHour": 13
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 16
+            },
+            {
+              "triggerAtHour": 18
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 21
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -3824,
+        960
+      ],
+      "id": "c671f473-2f8d-4f6c-aa08-0b0aea3d4c72",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Workflow 2 is ended - ' + $input.all().length }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        848
+      ],
+      "id": "3861fa76-66bb-4455-998c-05d6e233f479",
+      "name": "Send a text message",
+      "webhookId": "b4725e19-9583-4e49-976f-d313e61026ad",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api19.unipile.com:14931/api/v1/linkedin/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').first().json.account_id }}"
+            },
+            {
+              "name": "limit",
+              "value": "75"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api",
+              "value": "classic"
+            },
+            {
+              "name": "category",
+              "value": "people"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.searchUrl }}"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2704,
+        1104
+      ],
+      "id": "35e03d44-4c77-495c-91c2-a414db6786cb",
+      "name": "Get the list"
+    },
+    {
+      "parameters": {
+        "url": "={{ `https://api19.unipile.com:14931/api/v1/users/` + $('Wait4').item.json.public_identifier }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "linkedin_sections",
+              "value": "*"
+            },
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').first().json.account_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -464,
+        928
+      ],
+      "id": "6351ebbe-470c-4209-a0ef-139bb7eae0b3",
+      "name": "Retrieve the user profile",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2121286698,
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=2121286698"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cursor": "={{ $json.cursor }}",
+            "currentPage": "={{ $('Get the cursor and searchUrl').item.json.currentPage + 3 }}",
+            "id": "={{ $('Get the cursor and searchUrl').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "currentPage",
+              "displayName": "currentPage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2480,
+        1008
+      ],
+      "id": "cadc66cf-7c0b-44b3-b639-548379f35750",
+      "name": "Update a cursor",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ `https://api19.unipile.com:14931/api/v1/linkedin/company/` + $json.current_positions[0].company_id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').first().json.account_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -912,
+        928
+      ],
+      "id": "ee1b6425-5e7a-4f47-80ff-f4e3e9a25f9b",
+      "name": "Retrieve the company profile",
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2032,
+        1248
+      ],
+      "id": "f9301515-58a9-43f2-8840-c0f9439f3aa6",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input data from previous node\nconst inputData = $input.all();\n\n// Extract the items array from the first input item\nconst items = inputData[0].json.items;\n\n// Return the items array\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2256,
+        1248
+      ],
+      "id": "8a6ba30d-3613-46dc-a728-34387ac148ba",
+      "name": "Itmes"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -2480,
+        1248
+      ],
+      "id": "b76cd59d-9586-446a-8950-9419863d2363",
+      "name": "Wait3",
+      "webhookId": "6bb2584e-cd65-4d5a-b5de-d1ac611ee0fb"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait1 }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1136,
+        928
+      ],
+      "id": "2ab9f20e-bc39-4585-8018-e09394d244b1",
+      "name": "Wait4",
+      "webhookId": "a0b10ed2-5061-49cd-94d3-81d07eef5759"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Random time').item.json.wait2 }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -688,
+        928
+      ],
+      "id": "9471d6e7-7fd5-406f-9685-697815aa0814",
+      "name": "Wait5",
+      "webhookId": "8221336b-28f8-48e9-92dd-91a6b891a058"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Set min/max wait times (in seconds) for each wait point\nconst waitConfigs = {\n  wait1: { min: 5, max: 30 },   // First wait node\n  wait2: { min: 5, max: 30 },  // Second wait node\n};\n\n// Generate random times for each wait point\nconst waitTimes = {};\nfor (const [key, config] of Object.entries(waitConfigs)) {\n  waitTimes[key] = Math.floor(\n    Math.random() * (config.max - config.min + 1)\n  ) + config.min;\n}\n\nreturn [{ json: { ...$(\"Loop Over Items\").first().json, ...waitTimes } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        928
+      ],
+      "id": "d509eb44-c8a7-481b-9451-0d8702f0d9ae",
+      "name": "Random time"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1360,
+        736
+      ],
+      "id": "f68a38c0-dcfa-4e0c-909f-58e86dc68d69",
+      "name": "Wait6",
+      "webhookId": "f4c675d5-76c4-4f90-b578-0723723eee46"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1a563415-a003-4e6a-bf03-c9c93e432fb5",
+              "name": "firstName",
+              "value": "={{ $json.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "0544ffe0-db3b-461e-9f75-c1334fc705e7",
+              "name": "lastName",
+              "value": "={{ $json.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "df240657-5f0d-4f93-b80e-2dd8f5045e59",
+              "name": "headline",
+              "value": "={{ $json.headline }}",
+              "type": "string"
+            },
+            {
+              "id": "d29af7a7-fbec-4413-8461-28eb87204515",
+              "name": "location",
+              "value": "={{ $json.location }}",
+              "type": "string"
+            },
+            {
+              "id": "56d492c8-33eb-42a1-a139-e360e8071fde",
+              "name": "skills",
+              "value": "={{ $json.skills }}",
+              "type": "string"
+            },
+            {
+              "id": "a3181333-7b2a-4a04-a035-80176425860e",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "ac05443d-b2fc-4aad-ac8b-4f8ac3878a57",
+              "name": "position",
+              "value": "={{ $json.work_experience }}",
+              "type": "string"
+            },
+            {
+              "id": "71f07d33-0c7a-4570-9fb4-a1d2591e9bab",
+              "name": "publicUrl",
+              "value": "={{ $('Wait4').item.json.public_profile_url }}",
+              "type": "string"
+            },
+            {
+              "id": "68a47bb9-242e-43da-a271-f66f04c25376",
+              "name": "companyName",
+              "value": "={{ $('Retrieve the company profile').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "0231c9d4-21ef-44af-b4d2-06824d0d2f4e",
+              "name": "companyWebsite",
+              "value": "={{ $('Retrieve the company profile').item.json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "7bb00cfa-10bd-4ea0-965b-ab3126d8819b",
+              "name": "jobTitle",
+              "value": "={{ $('Wait4').item.json.current_positions[0].role }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        1008
+      ],
+      "id": "d41439aa-ff21-4c14-af4b-0dfb70d5027e",
+      "name": "Profile Fields",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1046460623,
+          "mode": "list",
+          "cachedResultName": "Linkedin Profiles-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=1046460623"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "position",
+              "displayName": "position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "publicUrl",
+              "displayName": "publicUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "comapnyWebsite",
+              "displayName": "comapnyWebsite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "jobTitle",
+              "displayName": "jobTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "useAppend": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -912,
+        736
+      ],
+      "id": "7033e906-966d-4be4-bf45-bd1bf500db30",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Iterate over each item in the input array\nreturn $input.all()\n  .map(item => {\n    const data = item.json;\n\n    // Check if any of the required fields is null or undefined\n    if (\n      !data.firstName ||\n      !data.lastName ||\n      !data.publicUrl ||\n      !data.companyName ||\n      !data.companyWebsite\n    ) {\n      return null; // Skip this item\n    }\n\n    return item; // Keep this item\n  })\n  .filter(item => item !== null); // Remove null entries"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1136,
+        736
+      ],
+      "id": "6a7e0300-2d50-4bca-ac51-028f373424b0",
+      "name": "Clean data"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'LinkedIn Scraper 2 Started - Israel Account. Time: ' +  $('Schedule Trigger').item.json['Day of month'] + \"-\" + $('Schedule Trigger').item.json.Hour + \"-\" + $('Schedule Trigger').item.json.Minute }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3376,
+        912
+      ],
+      "id": "91704169-7ceb-4c44-8943-67e5af436504",
+      "name": "Send a text message3",
+      "webhookId": "37fadbbb-a36c-4c0b-8fcb-43bc33b3c18a",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 12
+            },
+            {
+              "triggerAtHour": 14
+            },
+            {
+              "triggerAtHour": 15
+            },
+            {
+              "triggerAtHour": 17
+            },
+            {
+              "triggerAtHour": 19
+            },
+            {
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -3824,
+        1248
+      ],
+      "id": "29bf70b4-19a4-4d57-917f-9bb855807e73",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "ysO08LpxQrC7CBIEQFFp1A",
+              "type": "string"
+            },
+            {
+              "id": "86a8e763-c26e-4a74-bfe4-58b69642b699",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3600,
+        1248
+      ],
+      "id": "70a45b85-a55b-4950-868a-3f4833a5b034",
+      "name": "Emily account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "lLnNnvLpSsmg4FY7CGrwSg",
+              "type": "string"
+            },
+            {
+              "id": "98e50da1-0b74-4f63-aea5-d9ce4b56445a",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3600,
+        960
+      ],
+      "id": "d54b5d3e-b956-4fe3-9786-50800a45f7f4",
+      "name": "Israel account_id"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -3376,
+        1104
+      ],
+      "id": "ab11531e-3422-4e7e-8a2e-8d80f211d641",
+      "name": "Set account_id"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'LinkedIn Scraper 2 Started - Emily Account. Time: ' +  $('Schedule Trigger1').item.json['Day of month'] + \"-\" + $('Schedule Trigger1').item.json.Hour + \"-\" + $('Schedule Trigger1').item.json.Minute }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3376,
+        1296
+      ],
+      "id": "c415b1af-d342-4cc2-88ab-f6156135a148",
+      "name": "Send a text message4",
+      "webhookId": "37fadbbb-a36c-4c0b-8fcb-43bc33b3c18a",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all().map(item => item.json);\nconst hour = $('Set account_id').first().json.hour\n\nlet searchUrl;\nlet currentPage;\nlet cursor;\nlet id;\n\nswitch (hour) {\n  case '09':\n    id = input[0].id\n    currentPage = input[0].currentPage;\n    cursor = input[0].cursor\n    searchUrl = input[0].searchUrl;\n    break;\n  case '10':\n    if ($('Set account_id').first().json.account_id == 'ysO08LpxQrC7CBIEQFFp1A') {\n      id = input[1].id\n      currentPage = input[1].currentPage;\n      cursor = input[1].cursor\n      searchUrl = input[1].searchUrl;\n    } else {\n      id = input[2].id\n      currentPage = input[2].currentPage;\n      cursor = input[2].cursor\n      searchUrl = input[2].searchUrl;\n    }\n    break;\n  case '11':\n    id = input[3].id\n    currentPage = input[3].currentPage;\n    cursor = input[3].cursor\n    searchUrl = input[3].searchUrl;\n    break;\n  case '12':\n    id = input[4].id\n    currentPage = input[4].currentPage;\n    cursor = input[4].cursor\n    searchUrl = input[4].searchUrl;\n    break;\n  case '13':\n    id = input[5].id\n    currentPage = input[5].currentPage;\n    cursor = input[5].cursor\n    searchUrl = input[5].searchUrl;\n    break;\n  case '14':\n    if ($('Set account_id').first().json.account_id == 'ysO08LpxQrC7CBIEQFFp1A') {\n      id = input[6].id\n      currentPage = input[6].currentPage;\n      cursor = input[6].cursor\n      searchUrl = input[6].searchUrl;\n    } else {\n      id = input[7].id\n      currentPage = input[7].currentPage;\n      cursor = input[7].cursor\n      searchUrl = input[7].searchUrl;\n    }\n    break;\n  case '15':\n    id = input[8].id\n    currentPage = input[8].currentPage;\n    cursor = input[8].cursor\n    searchUrl = input[8].searchUrl;\n    break;\n  case '16':\n    id = input[9].id\n    currentPage = input[9].currentPage;\n    cursor = input[9].cursor\n    searchUrl = input[9].searchUrl;\n    break;\n  case '17':\n    id = input[10].id\n    currentPage = input[10].currentPage;\n    cursor = input[10].cursor\n    searchUrl = input[10].searchUrl;\n    break;\n  case '18':\n    id = input[10].id\n    currentPage = input[10].currentPage;\n    cursor = input[10].cursor\n    searchUrl = input[10].searchUrl;\n    break;\n  case '19':\n    if ($('Set account_id').first().json.account_id == 'ysO08LpxQrC7CBIEQFFp1A') {\n      id = input[11].id\n      currentPage = input[11].currentPage;\n      cursor = input[11].cursor\n      searchUrl = input[11].searchUrl;\n    } else {\n      id = input[12].id\n      currentPage = input[12].currentPage;\n      cursor = input[12].cursor\n      searchUrl = input[12].searchUrl;\n    }\n    break;\n  case '20':\n    id = input[13].id\n    currentPage = input[13].currentPage;\n    cursor = input[13].cursor\n    searchUrl = input[13].searchUrl;\n    break;\n  case '21':\n    id = input[14].id\n    currentPage = input[14].currentPage;\n    cursor = input[14].cursor\n    searchUrl = input[14].searchUrl;\n    break;\n  default:\n    id = input[7].id\n    currentPage = input[7].currentPage;\n    cursor = input[7].cursor\n    searchUrl = input[7].searchUrl;\n    break;\n}\n\nreturn [{hour, id, currentPage, cursor, searchUrl}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2928,
+        1104
+      ],
+      "id": "6ef6d70f-4d14-498e-8893-25064c798bef",
+      "name": "Get the cursor and searchUrl"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2121286698,
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=2121286698"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -3152,
+        1104
+      ],
+      "id": "5a878f93-04dc-44e0-80e0-0d39d8fb0e02",
+      "name": "Get the Cursor List",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1046460623,
+          "mode": "list",
+          "cachedResultName": "Linkedin Profiles-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=1046460623"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "publicUrl",
+              "lookupValue": "={{ $json.public_profile_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1808,
+        1248
+      ],
+      "id": "0a356327-d04d-41fb-9e9e-dd899cf1cf4a",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "da60c3b8-37a3-49c2-87ac-d7c0e5cc75de",
+              "leftValue": "={{ $input.all().first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1584,
+        1248
+      ],
+      "id": "732b62b4-cc93-4eef-b20a-c566fd528313",
+      "name": "Check the duplication"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3328,
+        560
+      ],
+      "id": "73704cd3-e228-4ae7-9838-301d28f35c1b",
+      "name": "Merge2",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all().map(item => item.json);\n\nreturn input[0];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3872,
+        544
+      ],
+      "id": "8694a9f3-9053-474e-b5f9-e528819cec3e",
+      "name": "Clean Data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "26468819-e602-461f-9384-68e515b4fb8a",
+              "leftValue": "={{ $input.all()[1].json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "43ccc07a-1c08-402b-9744-c69e51a238b5",
+              "leftValue": "={{ $input.all()[0].json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3584,
+        560
+      ],
+      "id": "fb63db7c-0e97-49ce-88e3-a7bc1836ecb0",
+      "name": "Check the Lead",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "search",
+        "query": "={{ `SELECT Name, Account.Name, Email FROM Contact WHERE Email='${$json.email}'` }}"
+      },
+      "name": "Check Salesforce Duplicates with Email",
+      "type": "n8n-nodes-base.salesforce",
+      "typeVersion": 1,
+      "position": [
+        3056,
+        576
+      ],
+      "id": "91a67eaa-9b4e-4c10-b389-8b7ea0c0f84c",
+      "alwaysOutputData": true,
+      "credentials": {
+        "salesforceOAuth2Api": {
+          "id": "2m21xiE5GUhVkcbI",
+          "name": "Salesforce account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1360,
+        1440
+      ],
+      "id": "374c4577-b5e0-4f87-86ec-b59f4010a39a",
+      "name": "Remove data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1584,
+        928
+      ],
+      "id": "bf848f1d-9366-4456-89d6-3619c8ddad48",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().filter(item => item.json && Object.keys(item.json).length > 0);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1808,
+        928
+      ],
+      "id": "3436a650-cdd4-4bf9-9768-769299311aa3",
+      "name": "Clean Empty Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Set min/max wait times (in seconds) for each wait point\nconst waitConfigs = {\n  wait1: { min: 5, max: 30 },   // First wait node\n  wait2: { min: 5, max: 30 },  // Second wait node\n};\n\n// Generate random times for each wait point\nconst waitTimes = {};\nfor (const [key, config] of Object.entries(waitConfigs)) {\n  waitTimes[key] = Math.floor(\n    Math.random() * (config.max - config.min + 1)\n  ) + config.min;\n}\n\nreturn [{ json: { ...$(\"Loop Over Items1\").first().json } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1360,
+        1232
+      ],
+      "id": "3598ca3b-a1cd-408e-b974-d74a16e0b5dd",
+      "name": "Random time1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check Salesforce Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Filter Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Profile Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Enrich with Clay",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Nurture Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Evaluation Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplication": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Salesforce Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Suitable lead": {
+      "main": [
+        []
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Deduplication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Profile Field": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluation Field": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Profile Analysis Report": {
+      "main": [
+        []
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Profile Analysis Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Filter Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Nurture Email": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Suitable lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enrich with Clay": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prospect": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Salesforce Duplicates with Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add prospects to Saleshandy": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Israel account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the list": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update a cursor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve the user profile": {
+      "main": [
+        [
+          {
+            "node": "Profile Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve the company profile": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Clean Empty Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Itmes": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Itmes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Retrieve the company profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Retrieve the user profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random time": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait6": {
+      "main": [
+        [
+          {
+            "node": "Clean data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Profile Fields": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Clean data": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a cursor": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Emily account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Israel account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emily account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Send a text message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set account_id": {
+      "main": [
+        [
+          {
+            "node": "Get the Cursor List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the cursor and searchUrl": {
+      "main": [
+        [
+          {
+            "node": "Get the list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the Cursor List": {
+      "main": [
+        [
+          {
+            "node": "Get the cursor and searchUrl",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Check the duplication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the duplication": {
+      "main": [
+        [
+          {
+            "node": "Random time1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Check the Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the Lead": {
+      "main": [
+        [
+          {
+            "node": "Clean Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Salesforce Duplicates with Email": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Clean Data": {
+      "main": [
+        [
+          {
+            "node": "Add prospects to Saleshandy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Wait6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Random time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Empty Items": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random time1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "66898ae7-c9e5-4cdc-a9b8-50b64ac10411",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf120ca0326fba41d4221ee0c421c0c2c8d9d27024ef91245df4c38c9cc2cf2b"
+  },
+  "id": "ZIsLMC1QDq6MTfwU",
+  "tags": []
+}

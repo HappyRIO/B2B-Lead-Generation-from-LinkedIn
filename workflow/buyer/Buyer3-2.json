@@ -1,0 +1,1467 @@
+{
+  "name": "Buyer3-2",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ `https://api19.unipile.com:14931/api/v1/users/` + $('Wait4').item.json.public_identifier }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "linkedin_sections",
+              "value": "*"
+            },
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').first().json.account_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        1328
+      ],
+      "id": "6540e8a4-0a2a-49b8-8701-79732f93d9c8",
+      "name": "Retrieve the user profile",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ `https://api19.unipile.com:14931/api/v1/linkedin/company/` + $json.current_positions.parseJson()[0].company_id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').first().json.account_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        1328
+      ],
+      "id": "acb14fd5-c32e-4fbe-a141-3c28139eb829",
+      "name": "Retrieve the company profile",
+      "retryOnFail": false,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait1 }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        1328
+      ],
+      "id": "a2189b06-24dc-4942-a1a3-f1cbe1bf8ddf",
+      "name": "Wait4",
+      "webhookId": "d2fb68d0-3f0b-40de-814e-9911edbb185a"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Random time').item.json.wait2 }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        1328
+      ],
+      "id": "54b969f3-8df1-4d98-8da4-b44b3505e447",
+      "name": "Wait5",
+      "webhookId": "88f58a9d-d7af-4eea-b895-c679040d5f03"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Set min/max wait times (in seconds) for each wait point\nconst waitConfigs = {\n  wait1: { min: 5, max: 30 },   // First wait node\n  wait2: { min: 5, max: 30 },  // Second wait node\n};\n\n// Generate random times for each wait point\nconst waitTimes = {};\nfor (const [key, config] of Object.entries(waitConfigs)) {\n  waitTimes[key] = Math.floor(\n    Math.random() * (config.max - config.min + 1)\n  ) + config.min;\n}\n\nreturn [{ json: { ...$(\"Loop Over Items\").first().json, ...waitTimes } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1328
+      ],
+      "id": "049c9968-3cc6-4516-bee2-a8dc2e348aa4",
+      "name": "Random time"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1a563415-a003-4e6a-bf03-c9c93e432fb5",
+              "name": "firstName",
+              "value": "={{ $json.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "0544ffe0-db3b-461e-9f75-c1334fc705e7",
+              "name": "lastName",
+              "value": "={{ $json.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "df240657-5f0d-4f93-b80e-2dd8f5045e59",
+              "name": "headline",
+              "value": "={{ $json.headline }}",
+              "type": "string"
+            },
+            {
+              "id": "d29af7a7-fbec-4413-8461-28eb87204515",
+              "name": "location",
+              "value": "={{ $json.location }}",
+              "type": "string"
+            },
+            {
+              "id": "56d492c8-33eb-42a1-a139-e360e8071fde",
+              "name": "skills",
+              "value": "={{ $json.skills }}",
+              "type": "string"
+            },
+            {
+              "id": "a3181333-7b2a-4a04-a035-80176425860e",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "ac05443d-b2fc-4aad-ac8b-4f8ac3878a57",
+              "name": "position",
+              "value": "={{ $json.work_experience }}",
+              "type": "string"
+            },
+            {
+              "id": "71f07d33-0c7a-4570-9fb4-a1d2591e9bab",
+              "name": "publicUrl",
+              "value": "={{ $('Wait4').item.json.public_profile_url }}",
+              "type": "string"
+            },
+            {
+              "id": "68a47bb9-242e-43da-a271-f66f04c25376",
+              "name": "companyName",
+              "value": "={{ $('Retrieve the company profile').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "0231c9d4-21ef-44af-b4d2-06824d0d2f4e",
+              "name": "companyWebsite",
+              "value": "={{ $('Retrieve the company profile').item.json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "7bb00cfa-10bd-4ea0-965b-ab3126d8819b",
+              "name": "jobTitle",
+              "value": "={{ $('Wait4').item.json.current_positions.parseJson()[0].role }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        1328
+      ],
+      "id": "c92e5320-13c1-4c3e-b545-cbaf68d4cc37",
+      "name": "Profile Fields",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1046460623,
+          "mode": "list",
+          "cachedResultName": "Linkedin Profiles-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=1046460623"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "position",
+              "displayName": "position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "publicUrl",
+              "displayName": "publicUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "comapnyWebsite",
+              "displayName": "comapnyWebsite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "jobTitle",
+              "displayName": "jobTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "useAppend": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1568,
+        1328
+      ],
+      "id": "e51f1000-c0f3-4ce4-9b59-269da1c26362",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Iterate over each item in the input array\nreturn $input.all()\n  .map(item => {\n    const data = item.json;\n\n    // Check if any of the required fields is null or undefined\n    if (\n      !data.firstName ||\n      !data.lastName ||\n      !data.publicUrl ||\n      !data.companyName ||\n      !data.companyWebsite\n    ) {\n      return null; // Skip this item\n    }\n\n    return item; // Keep this item\n  })\n  .filter(item => item !== null); // Remove null entries"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        1328
+      ],
+      "id": "c81a647b-262c-4e6e-a7e0-7a064cee4e95",
+      "name": "Clean data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -448,
+        1520
+      ],
+      "id": "fa979d24-e29b-4edd-8a48-79b59b67e752",
+      "name": "Loop Over Items",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1309925679,
+          "mode": "list",
+          "cachedResultName": "3-Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=1309925679"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "position",
+              "displayName": "position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "publicUrl",
+              "displayName": "publicUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "companyWebsite",
+              "displayName": "companyWebsite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "jobTitle",
+              "displayName": "jobTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "check",
+              "displayName": "check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "useAppend": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        1616
+      ],
+      "id": "5ae7bd01-4f1a-4a2a-bcad-c1db4599c330",
+      "name": "Append the Leads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 909958716,
+          "mode": "list",
+          "cachedResultName": "3-Unique-Profiles",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=909958716"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1120,
+        1520
+      ],
+      "id": "05017597-e1bf-440f-a342-1be22599be72",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assume the field you want to check is called \"check\"\nreturn $input.all().filter(item => {\n  return !item.json.check || item.json.check.trim() === \"\";\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -896,
+        1520
+      ],
+      "id": "bd9cbb69-9959-4632-a7ec-95ea2cd6cfd1",
+      "name": "Check"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().slice(0, 50);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        1520
+      ],
+      "id": "98a4cb01-63aa-4c55-ba7f-c989cd17422c",
+      "name": "Get 75 profiles"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 909958716,
+          "mode": "list",
+          "cachedResultName": "3-Unique-Profiles",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=909958716"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "check": "TURE"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_name",
+              "displayName": "last_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "member_urn",
+              "displayName": "member_urn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "public_identifier",
+              "displayName": "public_identifier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "public_profile_url",
+              "displayName": "public_profile_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "profile_url",
+              "displayName": "profile_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "profile_picture_url",
+              "displayName": "profile_picture_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "profile_picture_url_large",
+              "displayName": "profile_picture_url_large",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "network_distance",
+              "displayName": "network_distance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pending_invitation",
+              "displayName": "pending_invitation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_positions",
+              "displayName": "current_positions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "open_profile",
+              "displayName": "open_profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "premium",
+              "displayName": "premium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "shared_connections_count",
+              "displayName": "shared_connections_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "check",
+              "displayName": "check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "recent_posts_count",
+              "displayName": "recent_posts_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "recently_hired",
+              "displayName": "recently_hired",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -224,
+        1328
+      ],
+      "id": "cb9313a9-be36-4f83-8422-7be7e169b100",
+      "name": "Flag",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Buyer 3-2 Started - Emily Account. Time: ' +  $json['Day of month'] + \"-\" + $json.hour + \"-\" + $json.Minute }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1344,
+        1488
+      ],
+      "id": "7a568e9a-f9f9-4412-ac37-62ff1fb72ed9",
+      "name": "Send a text message4",
+      "webhookId": "ec6e1b09-42dd-4e73-a93d-40b4c36f9180",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1328,
+        1648
+      ],
+      "id": "dffb53e3-53b2-47d9-b0bf-db782273ae44",
+      "name": "Set account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "lLnNnvLpSsmg4FY7CGrwSg",
+              "type": "string"
+            },
+            {
+              "id": "d630f760-b6b2-4f43-a5d4-aff0f3871d90",
+              "name": "Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98e50da1-0b74-4f63-aea5-d9ce4b56445a",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "829eb6fb-a88e-4fba-824b-a86e27d66b55",
+              "name": "Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1568,
+        1376
+      ],
+      "id": "4f299402-7eda-4aa0-b0db-7b265beeca40",
+      "name": "Israel account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "=ysO08LpxQrC7CBIEQFFp1A",
+              "type": "string"
+            },
+            {
+              "id": "86a8e763-c26e-4a74-bfe4-58b69642b699",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "79483203-66db-492f-84d6-53f5306fd7c1",
+              "name": "=Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9312e5a2-cd0d-4fc9-9292-ea3ee528e5c5",
+              "name": "=Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1568,
+        1664
+      ],
+      "id": "42b246ff-b885-4665-8697-9a7a5cb24c35",
+      "name": "Emily account_id"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 12
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 16
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 20
+            },
+            {
+              "triggerAtHour": 21,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 23
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1792,
+        1664
+      ],
+      "id": "8359af55-37dd-40b4-bb25-01ea57566e8e",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Buyer 3-2 Started - Israel Account. Time: ' +  $json['Day of month'] + \"-\" + $json.hour + \"-\" + $json.Minute }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1344,
+        1328
+      ],
+      "id": "bc110441-584e-4541-9b34-add0987fde91",
+      "name": "Send a text message3",
+      "webhookId": "88ceb581-ec8b-49ee-a0ff-71b9175f445b",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": 6
+            },
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 10
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 12,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 14
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 16,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 6
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 20,
+              "triggerAtMinute": 40
+            },
+            {
+              "triggerAtHour": 22
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1792,
+        1376
+      ],
+      "id": "5276b83b-1988-40a2-bdc2-1d501688c901",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Buyer 3-2 is ended : ' + $input.all().length }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -208,
+        1504
+      ],
+      "id": "4afb6dbe-c503-4624-8341-559316b7904e",
+      "name": "Send a text message",
+      "webhookId": "ec6e1b09-42dd-4e73-a93d-40b4c36f9180",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-09-06T11:20:56.005-05:00",
+          "Readable date": "September 6th 2025, 11:20:56 am",
+          "Readable time": "11:20:56 am",
+          "Day of week": "Saturday",
+          "Year": "2025",
+          "Month": "September",
+          "Day of month": "06",
+          "Hour": "11",
+          "Minute": "20",
+          "Second": "56",
+          "Timezone": "America/Chicago (UTC-05:00)"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Retrieve the user profile": {
+      "main": [
+        [
+          {
+            "node": "Profile Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve the company profile": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Retrieve the company profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Retrieve the user profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random time": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Profile Fields": {
+      "main": [
+        [
+          {
+            "node": "Clean data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Clean data": {
+      "main": [
+        [
+          {
+            "node": "Append the Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Flag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check": {
+      "main": [
+        [
+          {
+            "node": "Get 75 profiles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get 75 profiles": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Israel account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emily account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Send a text message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Emily account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Israel account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set account_id": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append the Leads": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flag": {
+      "main": [
+        [
+          {
+            "node": "Random time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3d75d53f-f9c8-4ac3-8cba-64fd914abbe6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf120ca0326fba41d4221ee0c421c0c2c8d9d27024ef91245df4c38c9cc2cf2b"
+  },
+  "id": "X8zmCkAJviIYzdLc",
+  "tags": []
+}

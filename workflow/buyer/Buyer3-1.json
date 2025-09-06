@@ -1,0 +1,836 @@
+{
+  "name": "Buyer3-1",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api19.unipile.com:14931/api/v1/linkedin/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "lLnNnvLpSsmg4FY7CGrwSg"
+            },
+            {
+              "name": "limit",
+              "value": "75"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api",
+              "value": "classic"
+            },
+            {
+              "name": "category",
+              "value": "people"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.searchUrl }}"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -3760,
+        1216
+      ],
+      "id": "2722b832-cbdb-4cf8-89ab-b24a451e1918",
+      "name": "Get the list"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2121286698,
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=2121286698"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cursor": "={{ $json.cursor }}",
+            "currentPage": "={{ $('Get the cursor and searchUrl').item.json.currentPage + 3 }}",
+            "id": "={{ $('Get the cursor and searchUrl').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "currentPage",
+              "displayName": "currentPage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -3536,
+        1120
+      ],
+      "id": "1c35f2c5-fb85-410e-870a-68d3ea9fd8f0",
+      "name": "Update a cursor",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -3088,
+        1312
+      ],
+      "id": "fa43fb53-2e83-46db-a24d-d0ce2cd320a6",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input data from previous node\nconst inputData = $input.all();\n\n// Extract the items array from the first input item\nconst items = inputData[0].json.items;\n\n// Return the items array\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3312,
+        1312
+      ],
+      "id": "38bb4ac8-cbcf-413b-8f8f-d58488bfa3a2",
+      "name": "Itmes"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3536,
+        1312
+      ],
+      "id": "0694cc8c-0f87-49ba-81ff-fedb9bce1fb1",
+      "name": "Wait3",
+      "webhookId": "f9e896ed-d7b7-4ea7-9832-ee2337ddee9e"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all().map(item => item.json);\nconst count = input[0].count\n\nlet searchUrl;\nlet currentPage;\nlet cursor;\nlet id;\n\nlet index = count % 14;\n\nid = input[index].id\ncurrentPage = input[index].currentPage;\ncursor = input[index].cursor\nsearchUrl = input[index].searchUrl;\n\nreturn [{ json: { count, index, id, currentPage, cursor, searchUrl } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3984,
+        1120
+      ],
+      "id": "411e1a55-8aa7-4406-88df-4ebafdbcb9f7",
+      "name": "Get the cursor and searchUrl"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2121286698,
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=2121286698"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -4208,
+        1120
+      ],
+      "id": "e7f29923-45a1-4d92-8548-01d8384f652a",
+      "name": "Get the Cursor List",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1046460623,
+          "mode": "list",
+          "cachedResultName": "Linkedin Profiles-2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=1046460623"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "publicUrl",
+              "lookupValue": "={{ $json.public_profile_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2864,
+        1040
+      ],
+      "id": "425d1240-79c5-45ea-bd82-c6655fba3823",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "da60c3b8-37a3-49c2-87ac-d7c0e5cc75de",
+              "leftValue": "={{ $input.all().first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2640,
+        1040
+      ],
+      "id": "45032676-fbab-4032-8479-c5723b7cb770",
+      "name": "Check the duplication"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2416,
+        1136
+      ],
+      "id": "f60d49e3-0d20-41ef-94dc-4428362e8d89",
+      "name": "Remove data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Set min/max wait times (in seconds) for each wait point\nconst waitConfigs = {\n  wait1: { min: 5, max: 30 },   // First wait node\n  wait2: { min: 5, max: 30 },  // Second wait node\n};\n\n// Generate random times for each wait point\nconst waitTimes = {};\nfor (const [key, config] of Object.entries(waitConfigs)) {\n  waitTimes[key] = Math.floor(\n    Math.random() * (config.max - config.min + 1)\n  ) + config.min;\n}\n\nreturn [{ json: { ...$(\"Loop Over Items1\").first().json } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2416,
+        944
+      ],
+      "id": "3e411ad3-90c6-414c-8362-4d78e627bae9",
+      "name": "Random time1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 909958716,
+          "mode": "list",
+          "cachedResultName": "3-Unique-Profiles",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=909958716"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "useAppend": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2192,
+        1312
+      ],
+      "id": "e81b6f0c-39a1-4f61-9be9-a66338ccbc22",
+      "name": "Append the unique profile",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Get the Profiles from LinkedIn\n",
+        "height": 784,
+        "width": 2560
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4528,
+        768
+      ],
+      "typeVersion": 1,
+      "id": "58936850-42e4-4c65-bf76-aafe0f37a4fd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            },
+            {
+              "triggerAtHour": 11
+            },
+            {
+              "triggerAtHour": 13
+            },
+            {
+              "triggerAtHour": 14
+            },
+            {
+              "triggerAtHour": 15
+            },
+            {
+              "triggerAtHour": 16
+            },
+            {
+              "triggerAtHour": 17
+            },
+            {
+              "triggerAtHour": 18
+            },
+            {
+              "triggerAtHour": 19
+            },
+            {
+              "triggerAtHour": 9
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -4432,
+        1120
+      ],
+      "id": "aeb50164-2160-4790-9a50-1ccb4b3dbd03",
+      "name": "Schedule Trigger2"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Buyer 3-1 Started - Time: ' + $json.count + '-' + $json.id +  $('Schedule Trigger2').item.json['Day of month'] + \"-\" + $('Schedule Trigger2').item.json.Hour + \"-\" + $('Schedule Trigger2').item.json.Minute }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3760,
+        1024
+      ],
+      "id": "4981df00-967e-4144-978c-f921b9454972",
+      "name": "Send a text message3",
+      "webhookId": "88ceb581-ec8b-49ee-a0ff-71b9175f445b",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ 'Buyer 3-1 is ended - ' + $input.all().length}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -2864,
+        1328
+      ],
+      "id": "8b4e3fb8-7ca2-4590-b397-a77dcafe88d8",
+      "name": "Send a text message",
+      "webhookId": "88ceb581-ec8b-49ee-a0ff-71b9175f445b",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0",
+          "mode": "list",
+          "cachedResultName": "Lead",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2121286698,
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-9jaBj-3zgc-Ve1-h-3oeamRi9MDofMwZtvloTvNAG0/edit#gid=2121286698"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "digital_strategy",
+            "count": "={{ $('Get the cursor and searchUrl').item.json.count + 1 }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "currentPage",
+              "displayName": "currentPage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3088,
+        1120
+      ],
+      "id": "343b6766-9250-48ca-b678-9fe58d83cd63",
+      "name": "Update the count",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3312,
+        1120
+      ],
+      "id": "aa567905-c422-4852-9b01-029bd0f1d143",
+      "name": "Wait",
+      "webhookId": "25ca6731-89d9-44b6-b026-120e755815f6"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get the list": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update a cursor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Itmes": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Itmes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a cursor": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the cursor and searchUrl": {
+      "main": [
+        [
+          {
+            "node": "Get the list",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the Cursor List": {
+      "main": [
+        [
+          {
+            "node": "Get the cursor and searchUrl",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Check the duplication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the duplication": {
+      "main": [
+        [
+          {
+            "node": "Random time1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random time1": {
+      "main": [
+        [
+          {
+            "node": "Append the unique profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append the unique profile": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Get the Cursor List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Update the count",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "0eae2bbc-4feb-4bab-9e5c-43efd92f6114",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf120ca0326fba41d4221ee0c421c0c2c8d9d27024ef91245df4c38c9cc2cf2b"
+  },
+  "id": "8SU6ZoVx72iJq2Vj",
+  "tags": []
+}

@@ -1,0 +1,517 @@
+Medical Device
+Automation Machinery Manufacturing
+Biotechnology
+Accessible Hardware Manufacturing
+Alternative Fuel Vehicle Manufacturing
+Fuel Cell Manufacturing
+Engines and Power Transmission Equipment Manufacturing
+Electronic and Precision Equipment Maintenance
+Artificial Rubber and Synthetic Fiber Manufacturing
+Household Appliance Manufacturing
+Financial Services 4K+
+Hospitals and Health Care 3.5K+
+Higher Education 1.5K+
+Oil and Gas 1.5K+
+Retail 1K+
+Manufacturing 324
+Defense and Space Manufacturing
+Transportation Equipment Manufacturing
+Optometrists
+Biotechnology Research
+Family Planning Centers
+Medical Practices
+Transportation Programs
+Utilities Administration
+Pharmaceutical Manufacturing
+Outpatient Care Centers
+
+Veterinary Services
+
+Medical Equipment Manufacturing
+
+Space Research and Technology
+
+Motor Vehicle Parts Manufacturing
+
+Personal Care Product Manufacturing
+
+Retail Apparel and Fashion
+
+Sporting Goods Manufacturing
+
+Tobacco Manufacturing
+
+Medical and Diagnostic Laboratories
+
+Retail Groceries
+
+Food and Beverage Manufacturing
+
+Oil Extraction
+
+Computers and Electronics Manufacturing
+
+Natural Gas Extraction
+
+Furniture and Home Furnishings Manufacturing
+
+Home Health Care Services
+
+Entertainment Providers
+
+Gambling Facilities and Casinos
+
+Ambulance Services
+
+Hospitality
+
+Restaurants
+
+Hospitals
+
+Spectator Sports
+
+Food and Beverage Services
+
+Movies, Videos, and Sound
+
+Broadcast Media Production and Distribution
+
+Museums, Historical Sites, and Zoos
+
+Recreational Facilities
+
+Banking
+
+Insurance
+
+Nursing Homes and Residential Care Facilities
+
+Real Estate
+
+Construction
+
+Wholesale Building Materials
+
+Architecture and Planning
+
+Civil Engineering
+
+Aviation and Aerospace Component Manufacturing
+
+Motor Vehicle Manufacturing
+
+Interior Design
+
+Chemical Manufacturing
+
+Machinery Manufacturing
+
+Household and Institutional Furniture Manufacturing
+
+Mining
+
+Shipbuilding
+
+Utilities
+
+Textile Manufacturing
+
+Paper and Forest Product Manufacturing
+
+Railroad Equipment Manufacturing
+
+Farming
+
+Ranching
+
+Dairy Product Manufacturing
+
+Office Furniture and Fixtures Manufacturing
+
+Fisheries
+Primary and Secondary Education
+
+Mattress and Blinds Manufacturing
+
+Armed Forces
+Emergency and Relief Services
+Law Enforcement
+Performing Arts and Spectator Sports
+
+Printing Services
+Information Services
+
+Libraries
+
+Theater Companies
+
+Environmental Services
+
+Freight and Package Transportation
+
+Dance Companies
+
+Consumer Services
+
+Circuses and Magic Shows
+
+Truck Transportation
+
+Warehousing and Storage
+
+Sports Teams and Clubs
+
+Airlines and Aviation
+
+Maritime Transportation
+
+Racetracks
+Wholesale Motor Vehicles and Parts
+Retail Art Supplies
+
+Museums
+
+Wholesale Furniture and Home Furnishings
+
+Historical Sites
+Retail Art Dealers
+
+Musicians
+
+Zoos and Botanical Gardens
+
+Defense & Space
+
+Transportation, Logistics, Supply Chain and Storage
+
+Veterinary
+
+Plastics Manufacturing
+
+Cosmetics
+
+Apparel & Fashion
+Amusement Parks and Arcades
+
+Consumer Electronics
+Consumer Goods
+
+Furniture
+
+Facilities Services
+Food & Beverages
+
+Building Materials
+Automotive
+
+Dairy
+
+Leasing Non-residential Real Estate
+
+Education Management
+Wholesale Photography Equipment and Supplies
+
+Golf Courses and Country Clubs
+Wholesale
+
+Wholesale Computer Equipment
+
+Skiing Facilities
+Industrial Machinery Manufacturing
+Retail Office Equipment
+Business Supplies & Equipment
+
+Luxury Goods & Jewelry
+Renewables & Environment
+
+Beverage Manufacturing
+
+Accommodation and Food Services
+
+Wholesale Metals and Minerals
+
+Retail Luxury Goods and Jewelry
+
+Glass, Ceramics and Concrete Manufacturing
+
+Packaging and Containers Manufacturing
+
+Hotels and Motels
+
+Wholesale Appliances, Electrical, and Electronics
+
+Commercial Real Estate
+Wine & Spirits
+
+Bed-and-Breakfasts, Hostels, Homestays
+
+Mechanical Or Industrial Engineering
+
+Horticulture
+
+Transportation/Trucking/Railroad
+
+Packaging & Containers
+
+Food Production
+
+Sporting Goods
+
+Wholesale Hardware, Plumbing, Heating Equipment
+
+Aviation & Aerospace
+Tobacco
+
+Warehousing
+Wholesale Machinery
+Maritime
+
+Entertainment
+Paper & Forest Products
+
+Renewable Energy Power Generation
+
+Bars, Taverns, and Nightclubs
+
+Renewable Energy Equipment Manufacturing
+Accessible Architecture and Design
+
+Repair and Maintenance
+
+Surveying and Mapping Services
+
+Vehicle Repair and Maintenance
+
+Retail Pharmacies
+
+Wholesale Recyclable Materials
+
+Wholesale Luxury Goods and Jewelry
+
+Wholesale Paper Products
+
+Wholesale Drugs and Sundries
+
+Wholesale Apparel and Sewing Supplies
+
+Commercial and Industrial Machinery Maintenance
+
+Farming, Ranching, Forestry
+
+Reupholstery and Furniture Repair
+
+Wholesale Footwear
+
+Wholesale Food and Beverage
+
+Footwear and Leather Goods Repair
+Wholesale Petroleum and Petroleum Products
+
+Wholesale Alcoholic Beverages
+
+Ranching and Fisheries
+
+Retail Motor Vehicles
+
+Retail Furniture and Home Furnishings
+
+Retail Appliances, Electrical, and Electronic Equipment
+
+Forestry and Logging
+
+Retail Building Materials and Garden Equipment
+
+Food and Beverage Retail
+
+Air, Water, and Waste Program Management
+Oil, Gas, and Mining
+Retail Health and Personal Care Products
+
+Coal Mining
+
+Metal Ore Mining
+
+Retail Gasoline
+Nonmetallic Mineral Mining
+
+Electric Power Transmission, Control, and Distribution
+
+Retail Musical Instruments
+
+Electric Power Generation
+
+Hydroelectric Power Generation
+
+Fossil Fuel Electric Power Generation
+
+Nuclear Electric Power Generation
+
+Solar Electric Power Generation
+
+Geothermal Electric Power Generation
+
+Biomass Electric Power Generation
+
+Natural Gas Distribution
+
+Water, Waste, Steam, and Air Conditioning Services
+
+Retail Florists
+
+Retail Office Supplies and Gifts
+
+Water Supply and Irrigation Systems
+
+Steam and Air-Conditioning Supply
+
+Building Construction
+
+Retail Recyclable Materials & Used Merchandise
+
+Residential Building Construction
+
+Nonresidential Building Construction
+
+Utility System Construction
+
+Electrical Equipment Manufacturing
+Highway, Street, and Bridge Construction
+Building Structure and Exterior Contractors
+
+Wind Electric Power Generation
+
+Wineries
+
+Building Equipment Contractors
+
+Rail Transportation
+
+Building Finishing Contractors
+
+Ground Passenger Transportation
+
+Urban Transit Services
+
+Interurban and Rural Bus Services
+
+Taxi and Limousine Services
+
+Animal Feed Manufacturing
+
+School and Employee Bus Services
+
+Shuttles and Special Needs Transportation Services
+
+Sugar and Confectionery Product Manufacturing
+
+Pipeline Transportation
+
+Fruit and Vegetable Preserves Manufacturing
+
+Sightseeing Transportation
+
+Meat Products Manufacturing
+
+Seafood Product Manufacturing
+
+Baked Goods Manufacturing
+
+Postal Services
+
+Breweries
+
+Distilleries
+
+Apparel Manufacturing
+
+Fashion Accessories Manufacturing
+
+Leather Product Manufacturing
+
+Footwear Manufacturing
+
+Women's Handbag Manufacturing
+Oil and Coal Product Manufacturing
+
+
+Chemical Raw Materials Manufacturing
+
+Insurance Carriers
+
+Agricultural Chemical Manufacturing
+
+Insurance Agencies and Brokerages
+
+Claims Adjusting, Actuarial Services
+
+Paint, Coating, and Adhesive Manufacturing
+Soap and Cleaning Product Manufacturing
+
+Real Estate and Equipment Rental Services
+
+Leasing Residential Real Estate
+
+Plastics and Rubber Product Manufacturing
+
+Real Estate Agents and Brokers
+
+Equipment Rental Services
+Rubber Products Manufacturing
+
+Clay and Refractory Products Manufacturing
+
+Commercial and Industrial Equipment Rental
+
+Glass Product Manufacturing
+
+Wood Product Manufacturing
+
+Lime and Gypsum Products Manufacturing
+
+Abrasives and Nonmetallic Minerals Manufacturing
+
+Primary Metal Manufacturing
+Fabricated Metal Products
+
+Cutlery and Handtool Manufacturing
+
+Architectural and Structural Metal Manufacturing
+
+Boilers, Tanks, and Shipping Container Manufacturing
+
+Construction Hardware Manufacturing
+
+Spring and Wire Product Manufacturing
+
+Turned Products and Fastener Manufacturing
+
+Metal Treatments
+Landscaping Services
+
+Metal Valve, Ball, and Roller Manufacturing
+Agriculture, Construction, Mining Machinery Manufacturing
+
+Commercial and Service Industry Machinery Manufacturing
+
+HVAC and Refrigeration Equipment Manufacturing
+
+Metalworking Machinery Manufacturing
+
+Waste Collection
+
+Waste Treatment and Disposal
+
+Education
+
+Secretarial Schools
+
+Cosmetology and Barber Schools
+
+Flight Training
+
+Fine Arts Schools
+
+Sports and Recreation Instruction
+Fire Protection
+
