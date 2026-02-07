@@ -1,0 +1,2716 @@
+{
+  "name": "Buyer-A-1",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api19.unipile.com:14931/api/v1/linkedin/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').all().first().json.account_id }}"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api",
+              "value": "classic"
+            },
+            {
+              "name": "category",
+              "value": "people"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.searchUrl }}"
+            },
+            {
+              "name": "cursor",
+              "value": "={{ $json.cursor }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4128,
+        1856
+      ],
+      "id": "2722b832-cbdb-4cf8-89ab-b24a451e1918",
+      "name": "Get the list"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "cursor": "={{ $json.cursor }}",
+            "id": "={{ $('Get the cursor and searchUrl').item.json.id }}",
+            "pages": "={{ $('Get the cursor and searchUrl').item.json.pages + 2 }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pages",
+              "displayName": "pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "about",
+              "displayName": "about",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -3904,
+        1760
+      ],
+      "id": "1c35f2c5-fb85-410e-870a-68d3ea9fd8f0",
+      "name": "Update a cursor",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -3456,
+        1952
+      ],
+      "id": "fa43fb53-2e83-46db-a24d-d0ce2cd320a6",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input data from previous node\nconst inputData = $input.all();\n\n// Extract the items array from the first input item\nconst items = inputData[0].json.items;\n\n// Return the items array\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3680,
+        1952
+      ],
+      "id": "38bb4ac8-cbcf-413b-8f8f-d58488bfa3a2",
+      "name": "Itmes"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3904,
+        1952
+      ],
+      "id": "0694cc8c-0f87-49ba-81ff-fedb9bce1fb1",
+      "name": "Wait3",
+      "webhookId": "f9e896ed-d7b7-4ea7-9832-ee2337ddee9e"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all().map(item => item.json);\nconst count = input[0].count\n\nlet searchUrl;\nlet pages;\nlet cursor;\nlet id;\n\nlet index = count % 96;\n\nif ( index == 90 ) index = 13;\nif ( index == 91 ) index = 14;\nif ( index == 92 ) index = 40;\nif ( index == 93 ) index = 44;\nif ( index == 94 ) index = 70;\nif ( index == 95 ) index = 74;\n\nid = input[index].id\npages = input[index].pages;\ncursor = input[index].cursor\nsearchUrl = input[index].searchUrl;\n\nreturn [{ json: { count, index, id, pages, cursor, searchUrl } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4352,
+        1760
+      ],
+      "id": "411e1a55-8aa7-4406-88df-4ebafdbcb9f7",
+      "name": "Get the cursor and searchUrl"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -4576,
+        1760
+      ],
+      "id": "e7f29923-45a1-4d92-8548-01d8384f652a",
+      "name": "Get the Cursor List",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "da60c3b8-37a3-49c2-87ac-d7c0e5cc75de",
+              "leftValue": "={{ $input.all().first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3008,
+        1728
+      ],
+      "id": "45032676-fbab-4032-8479-c5723b7cb770",
+      "name": "Check the duplication"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2784,
+        1728
+      ],
+      "id": "f60d49e3-0d20-41ef-94dc-4428362e8d89",
+      "name": "Remove data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Set min/max wait times (in seconds) for each wait point\nconst waitConfigs = {\n  wait1: { min: 5, max: 30 },   // First wait node\n  wait2: { min: 5, max: 30 },  // Second wait node\n};\n\n// Generate random times for each wait point\nconst waitTimes = {};\nfor (const [key, config] of Object.entries(waitConfigs)) {\n  waitTimes[key] = Math.floor(\n    Math.random() * (config.max - config.min + 1)\n  ) + config.min;\n}\n\nreturn [{ json: { ...$(\"Loop Over Items1\").first().json } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2784,
+        1536
+      ],
+      "id": "3e411ad3-90c6-414c-8362-4d78e627bae9",
+      "name": "Random time1"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ '<code>Buyer-A-1</code> Started - <code>'+ $('Set account_id').all().first().json.account +'</code> - ' + $json.count + ' - <code>' + $json.id + '</code>' }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -4128,
+        1664
+      ],
+      "id": "4981df00-967e-4144-978c-f921b9454972",
+      "name": "Send a text message3",
+      "webhookId": "88ceb581-ec8b-49ee-a0ff-71b9175f445b",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ '<code>Buyer-A-1</code> is ended - ' + $input.all().filter(item => item.json.id ).length}}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3232,
+        1920
+      ],
+      "id": "8b4e3fb8-7ca2-4590-b397-a77dcafe88d8",
+      "name": "Send a text message",
+      "webhookId": "88ceb581-ec8b-49ee-a0ff-71b9175f445b",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "fl_ai",
+            "count": "={{ $('Get the cursor and searchUrl').item.json.count + 1 }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "currentPage",
+              "displayName": "currentPage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3456,
+        1760
+      ],
+      "id": "343b6766-9250-48ca-b678-9fe58d83cd63",
+      "name": "Update the count",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -3680,
+        1760
+      ],
+      "id": "aa567905-c422-4852-9b01-029bd0f1d143",
+      "name": "Wait",
+      "webhookId": "25ca6731-89d9-44b6-b026-120e755815f6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -5472,
+        3024
+      ],
+      "id": "37993648-3f69-4825-baec-f9964fa66d00",
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -5248,
+        3024
+      ],
+      "id": "c579732b-e06f-4d20-8e37-28d7abf5aa53",
+      "name": "Get the cursor",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -5024,
+        3024
+      ],
+      "id": "ad56d792-d6a6-4e75-9362-7a00338f8402",
+      "name": "Loop Over Items",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Loop Over Items').item.json.id }}",
+            "pages": "={{ $('Loop Over Items').item.json.pages + 2 }}",
+            "cursor": "={{ $json.cursor }}",
+            "total": "={{ $json.paging.total_count }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pages",
+              "displayName": "pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "about",
+              "displayName": "about",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4352,
+        2944
+      ],
+      "id": "c7bef848-b3e1-4d38-9a8f-389511d9928a",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api19.unipile.com:14931/api/v1/linkedin/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "lLnNnvLpSsmg4FY7CGrwSg"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api",
+              "value": "classic"
+            },
+            {
+              "name": "category",
+              "value": "people"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.searchUrl }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -4576,
+        2944
+      ],
+      "id": "75bbab96-0ba6-4932-9d35-4d9a241da19b",
+      "name": "Get the list1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cursor",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": 2,
+            "count": "={{ $('Loop Over Items').item.json.count + 1 }}",
+            "id": "fl_ai"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pages",
+              "displayName": "pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "about",
+              "displayName": "about",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -3904,
+        3024
+      ],
+      "id": "d13753de-1f99-4559-840b-1755bfe98f57",
+      "name": "Update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -4800,
+        2944
+      ],
+      "id": "bd053cfd-15f3-4e33-be87-143909625065",
+      "name": "Wait1",
+      "webhookId": "47171b46-cdb5-4e6a-84be-26c4fcd9f6fe",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -4128,
+        2944
+      ],
+      "id": "6764fe3e-cb8b-4f63-af96-b8ba8bf3e147",
+      "name": "Wait2",
+      "webhookId": "465bf0ff-50e0-4837-a001-d26b9e101f56",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "LinkedIn Profile",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Profile"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "id": 0
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_name",
+              "displayName": "last_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "member_urn",
+              "displayName": "member_urn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "public_identifier",
+              "displayName": "public_identifier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "public_profile_url",
+              "displayName": "public_profile_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_url",
+              "displayName": "profile_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_picture_url",
+              "displayName": "profile_picture_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "profile_picture_url_large",
+              "displayName": "profile_picture_url_large",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "network_distance",
+              "displayName": "network_distance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pending_invitation",
+              "displayName": "pending_invitation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "current_positions",
+              "displayName": "current_positions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "open_profile",
+              "displayName": "open_profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "premium",
+              "displayName": "premium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "recently_hired",
+              "displayName": "recently_hired",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "shared_connections_count",
+              "displayName": "shared_connections_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "recent_posts_count",
+              "displayName": "recent_posts_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "check",
+              "displayName": "check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2560,
+        1904
+      ],
+      "id": "cfa32de0-e3bc-4c7d-a2a9-ede0228ce84e",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "zMYtLOZWmNsWQuBV",
+          "name": "Postgres Account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "LinkedIn Profile",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Profile"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -3232,
+        1728
+      ],
+      "id": "0fb84270-778e-439f-ae11-78114d2617db",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "zMYtLOZWmNsWQuBV",
+          "name": "Postgres Account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        1536
+      ],
+      "id": "aeb50164-2160-4790-9a50-1ccb4b3dbd03",
+      "name": "Schedule Trigger - 10 AM"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -5248,
+        1168
+      ],
+      "id": "13745ebd-ee1d-4753-afda-132ead1b07fa",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 14
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        1728
+      ],
+      "id": "54a61481-25d2-444a-962f-53d87d7348d9",
+      "name": "Schedule Trigger - 2 PM"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 15
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        2304
+      ],
+      "id": "c5ead186-173d-437d-ba6f-cb70ab8bc11c",
+      "name": "Schedule Trigger - 3 PM"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 327851703,
+          "mode": "list",
+          "cachedResultName": "Cursor-E",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=327851703"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -5472,
+        2720
+      ],
+      "id": "8891dbd0-4173-4dbb-8520-e12795d797d3",
+      "name": "Get the cursor1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api19.unipile.com:14931/api/v1/linkedin/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "lLnNnvLpSsmg4FY7CGrwSg"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "api",
+              "value": "classic"
+            },
+            {
+              "name": "category",
+              "value": "people"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.searchUrl }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -5024,
+        2720
+      ],
+      "id": "df25dc32-abc0-4204-a89e-f7d1125eeec5",
+      "name": "Get the list2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all().map(item => item.json);\nconst count = input[0].count\n\nlet searchUrl;\nlet pages;\nlet cursor;\nlet id;\n\nlet index = count % 60;\n\n\nid = input[index].id\npages = input[index].pages;\ncursor = input[index].cursor\nsearchUrl = input[index].searchUrl;\n\nreturn [{ json: { count, index, id, pages, cursor, searchUrl } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -5248,
+        2720
+      ],
+      "id": "ed990b92-172f-47d5-a39c-aa8da7755340",
+      "name": "Get the cursor and searchUrl1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 327851703,
+          "mode": "list",
+          "cachedResultName": "Cursor-E",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=327851703"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get the cursor and searchUrl1').item.json.id }}",
+            "pages": "={{ $('Get the cursor and searchUrl1').item.json.pages + 2 }}",
+            "cursor": "={{ $json.cursor }}",
+            "total": "={{ $json.paging.total_count }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pages",
+              "displayName": "pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "about",
+              "displayName": "about",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4800,
+        2720
+      ],
+      "id": "bbd90118-c71f-4413-b269-7956ee7df3d3",
+      "name": "Update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI",
+          "mode": "list",
+          "cachedResultName": "Buyer-Atlanta",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 327851703,
+          "mode": "list",
+          "cachedResultName": "Cursor-E",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KQN-BQWJDbVf279mNiYxVWKFaHwT_P4jr7b74DbjjiI/edit#gid=327851703"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "count": "={{ $('Get the cursor and searchUrl1').item.json.count + 1 }}",
+            "id": "ca_ai"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pages",
+              "displayName": "pages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cursor",
+              "displayName": "cursor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "searchUrl",
+              "displayName": "searchUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "about",
+              "displayName": "about",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -4352,
+        2720
+      ],
+      "id": "0a618bb5-37dc-4931-b0eb-906b9a3cc184",
+      "name": "Update row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "quanImpRuISgCgJF",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -4576,
+        2720
+      ],
+      "id": "6cc23d46-3632-4701-93e4-d0add6e769ef",
+      "name": "Wait4",
+      "webhookId": "465bf0ff-50e0-4837-a001-d26b9e101f56",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -4800,
+        1744
+      ],
+      "id": "69f07223-0f54-43e1-b53f-e5360623e069",
+      "name": "Set account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "lLnNnvLpSsmg4FY7CGrwSg",
+              "type": "string"
+            },
+            {
+              "id": "d630f760-b6b2-4f43-a5d4-aff0f3871d90",
+              "name": "Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98e50da1-0b74-4f63-aea5-d9ce4b56445a",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "829eb6fb-a88e-4fba-824b-a86e27d66b55",
+              "name": "Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            },
+            {
+              "id": "bf97af6a-6a29-48e5-b0e1-d3cb688502d8",
+              "name": "worker",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "8553bbdb-3e3d-4ca8-a41d-8e16f83dc9db",
+              "name": "account",
+              "value": "Israel",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5024,
+        2336
+      ],
+      "id": "0b9f6024-3b30-4771-a5fb-ca390239d740",
+      "name": "Israel account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "=b00f_AmiQW--8xMCOt6bKg",
+              "type": "string"
+            },
+            {
+              "id": "86a8e763-c26e-4a74-bfe4-58b69642b699",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "79483203-66db-492f-84d6-53f5306fd7c1",
+              "name": "=Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9312e5a2-cd0d-4fc9-9292-ea3ee528e5c5",
+              "name": "=Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            },
+            {
+              "id": "8b36012e-a6db-4f15-b47d-ac0bcdf9f2a5",
+              "name": "account",
+              "value": "Andrew",
+              "type": "string"
+            },
+            {
+              "id": "a6590f0a-14c5-4397-9bae-99f87a760b6e",
+              "name": "worker",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5024,
+        1184
+      ],
+      "id": "fd235111-7c9d-4958-bd4b-b9bc4ba74b89",
+      "name": "Andrew account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "ysO08LpxQrC7CBIEQFFp1A",
+              "type": "string"
+            },
+            {
+              "id": "d630f760-b6b2-4f43-a5d4-aff0f3871d90",
+              "name": "Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98e50da1-0b74-4f63-aea5-d9ce4b56445a",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "829eb6fb-a88e-4fba-824b-a86e27d66b55",
+              "name": "Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            },
+            {
+              "id": "9cedb27d-2e7a-4406-b256-5787c498a295",
+              "name": "worker",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "9705e84b-7509-4f5d-bd8d-10c910b521d5",
+              "name": "account",
+              "value": "Emily",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5024,
+        1760
+      ],
+      "id": "a16bbf6d-7c5a-4f65-8bbf-df796525db24",
+      "name": "Emily account_id"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -5248,
+        1744
+      ],
+      "id": "6947bb79-8033-45da-aaf8-093ebaaf6aff",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -5248,
+        2320
+      ],
+      "id": "482981da-8880-4f0e-827e-0ce00fa0c90e",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        960
+      ],
+      "id": "faf0482c-ab25-4425-8b46-dd2783106cdc",
+      "name": "Schedule Trigger - 9 AM"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 11
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        2112
+      ],
+      "id": "d6999942-7410-47b9-82f7-7e6d3f69371d",
+      "name": "Schedule Trigger - 11 AM"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 19
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        2496
+      ],
+      "id": "c4c5aba1-74b1-4e0a-a346-763a4b31e342",
+      "name": "Schedule Trigger - 7 PM"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 13
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        1152
+      ],
+      "id": "f25799ae-c51d-4956-a7c7-f45bbc4cf7f4",
+      "name": "Schedule Trigger - 1 PM"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 17
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        1344
+      ],
+      "id": "052e3fa6-d29b-44b4-8831-c3c5a19bcdf9",
+      "name": "Schedule Trigger - 5 PM"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 5
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 10
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 20
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 25
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -5472,
+        1920
+      ],
+      "id": "bfd95b3e-a4b0-4db0-b071-b22b6183a2d0",
+      "name": "Schedule Trigger - 6 PM"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get the list": {
+      "main": [
+        [
+          {
+            "node": "Update a cursor",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Itmes": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Itmes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a cursor": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the cursor and searchUrl": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get the list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the Cursor List": {
+      "main": [
+        [
+          {
+            "node": "Get the cursor and searchUrl",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the duplication": {
+      "main": [
+        [
+          {
+            "node": "Random time1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random time1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Update the count",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get the cursor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the cursor": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the list1": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Get the list1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Check the duplication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 10 AM": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Andrew account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 2 PM": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 3 PM": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get the cursor1": {
+      "main": [
+        [
+          {
+            "node": "Get the cursor and searchUrl1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the cursor and searchUrl1": {
+      "main": [
+        [
+          {
+            "node": "Get the list2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the list2": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Israel account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Andrew account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emily account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set account_id": {
+      "main": [
+        [
+          {
+            "node": "Get the Cursor List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Emily account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Israel account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 9 AM": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 11 AM": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 7 PM": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 1 PM": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 5 PM": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger - 6 PM": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "1dd6fb5a-43c9-4a01-bd88-6ff492189d23",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf120ca0326fba41d4221ee0c421c0c2c8d9d27024ef91245df4c38c9cc2cf2b"
+  },
+  "id": "8SU6ZoVx72iJq2Vj",
+  "tags": []
+}

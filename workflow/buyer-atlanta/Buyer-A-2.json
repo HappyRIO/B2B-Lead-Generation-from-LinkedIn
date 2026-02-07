@@ -1,0 +1,1631 @@
+{
+  "name": "Buyer-A-2",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ `https://api19.unipile.com:14931/api/v1/users/` + $('Wait4').item.json.public_identifier }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "linkedin_sections",
+              "value": "*"
+            },
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').first().json.account_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        896,
+        1520
+      ],
+      "id": "6540e8a4-0a2a-49b8-8701-79732f93d9c8",
+      "name": "Retrieve the user profile",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ 'https://api19.unipile.com:14931/api/v1/linkedin/company/' + $json.current_positions[0].company_id }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "account_id",
+              "value": "={{ $('Set account_id').first().json.account_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-KEY",
+              "value": "15PfB6yD.cFcalaEPpsjzVUjeGpbMpvHt1DeuI98NfG/00TKuAdc="
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        1520
+      ],
+      "id": "acb14fd5-c32e-4fbe-a141-3c28139eb829",
+      "name": "Retrieve the company profile",
+      "retryOnFail": false,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $json.wait1 }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        1520
+      ],
+      "id": "a2189b06-24dc-4942-a1a3-f1cbe1bf8ddf",
+      "name": "Wait4",
+      "webhookId": "d2fb68d0-3f0b-40de-814e-9911edbb185a"
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Random time').item.json.wait2 }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        1520
+      ],
+      "id": "54b969f3-8df1-4d98-8da4-b44b3505e447",
+      "name": "Wait5",
+      "webhookId": "88f58a9d-d7af-4eea-b895-c679040d5f03"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Set min/max wait times (in seconds) for each wait point\nconst waitConfigs = {\n  wait1: { min: 5, max: 30 },   // First wait node\n  wait2: { min: 5, max: 30 },  // Second wait node\n};\n\n// Generate random times for each wait point\nconst waitTimes = {};\nfor (const [key, config] of Object.entries(waitConfigs)) {\n  waitTimes[key] = Math.floor(\n    Math.random() * (config.max - config.min + 1)\n  ) + config.min;\n}\n\nreturn [{ json: { ...$(\"Loop Over Items\").first().json, ...waitTimes } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        1520
+      ],
+      "id": "049c9968-3cc6-4516-bee2-a8dc2e348aa4",
+      "name": "Random time"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1a563415-a003-4e6a-bf03-c9c93e432fb5",
+              "name": "firstName",
+              "value": "={{ $json.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "0544ffe0-db3b-461e-9f75-c1334fc705e7",
+              "name": "lastName",
+              "value": "={{ $json.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "df240657-5f0d-4f93-b80e-2dd8f5045e59",
+              "name": "headline",
+              "value": "={{ $json.headline }}",
+              "type": "string"
+            },
+            {
+              "id": "d29af7a7-fbec-4413-8461-28eb87204515",
+              "name": "location",
+              "value": "={{ $json.location }}",
+              "type": "string"
+            },
+            {
+              "id": "56d492c8-33eb-42a1-a139-e360e8071fde",
+              "name": "skills",
+              "value": "={{ $json.skills }}",
+              "type": "string"
+            },
+            {
+              "id": "a3181333-7b2a-4a04-a035-80176425860e",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "ac05443d-b2fc-4aad-ac8b-4f8ac3878a57",
+              "name": "position",
+              "value": "={{ $json.work_experience }}",
+              "type": "string"
+            },
+            {
+              "id": "71f07d33-0c7a-4570-9fb4-a1d2591e9bab",
+              "name": "publicUrl",
+              "value": "={{ $('Wait4').item.json.public_profile_url }}",
+              "type": "string"
+            },
+            {
+              "id": "68a47bb9-242e-43da-a271-f66f04c25376",
+              "name": "companyName",
+              "value": "={{ $('Retrieve the company profile').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "0231c9d4-21ef-44af-b4d2-06824d0d2f4e",
+              "name": "companyWebsite",
+              "value": "={{ $('Retrieve the company profile').item.json.website }}",
+              "type": "string"
+            },
+            {
+              "id": "7bb00cfa-10bd-4ea0-965b-ab3126d8819b",
+              "name": "jobTitle",
+              "value": "={{ $('Wait4').item.json.current_positions[0].role }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        1520
+      ],
+      "id": "c92e5320-13c1-4c3e-b545-cbaf68d4cc37",
+      "name": "Profile Fields",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Iterate over each item in the input array\nreturn $input.all()\n  .map(item => {\n    const data = item.json;\n\n    // Check if any of the required fields is null or undefined\n    if (\n      !data.firstName ||\n      !data.lastName ||\n      !data.publicUrl ||\n      !data.companyName ||\n      !data.companyWebsite\n    ) {\n      return null; // Skip this item\n    }\n\n    return item; // Keep this item\n  })\n  .filter(item => item !== null); // Remove null entries"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        1520
+      ],
+      "id": "c81a647b-262c-4e6e-a7e0-7a064cee4e95",
+      "name": "Clean data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1120,
+        1952
+      ],
+      "id": "fa979d24-e29b-4edd-8a48-79b59b67e752",
+      "name": "Loop Over Items",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1792,
+        1864
+      ],
+      "id": "dffb53e3-53b2-47d9-b0bf-db782273ae44",
+      "name": "Set account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "lLnNnvLpSsmg4FY7CGrwSg",
+              "type": "string"
+            },
+            {
+              "id": "d630f760-b6b2-4f43-a5d4-aff0f3871d90",
+              "name": "Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98e50da1-0b74-4f63-aea5-d9ce4b56445a",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "829eb6fb-a88e-4fba-824b-a86e27d66b55",
+              "name": "Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            },
+            {
+              "id": "bf97af6a-6a29-48e5-b0e1-d3cb688502d8",
+              "name": "worker",
+              "value": 3,
+              "type": "number"
+            },
+            {
+              "id": "8553bbdb-3e3d-4ca8-a41d-8e16f83dc9db",
+              "name": "account",
+              "value": "Israel",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2016,
+        2000
+      ],
+      "id": "4f299402-7eda-4aa0-b0db-7b265beeca40",
+      "name": "Israel account_id"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            },
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 45
+            },
+            {
+              "triggerAtHour": 12
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 45
+            },
+            {
+              "triggerAtHour": 17
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 20,
+              "triggerAtMinute": 45
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2240,
+        1616
+      ],
+      "id": "5276b83b-1988-40a2-bdc2-1d501688c901",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ '<code>Buyer-A-2</code> is ended : ' + $input.all().filter(item => item.json.id).length }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -896,
+        1808
+      ],
+      "id": "4afb6dbe-c503-4624-8341-559316b7904e",
+      "name": "Send a text message",
+      "webhookId": "ec6e1b09-42dd-4e73-a93d-40b4c36f9180",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "da60c3b8-37a3-49c2-87ac-d7c0e5cc75de",
+              "leftValue": "={{ $input.all().first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        1616
+      ],
+      "id": "9b79b365-d97b-4ae2-bcfb-d471127b0089",
+      "name": "Check the duplication"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        1712
+      ],
+      "id": "889a23f2-a817-4fda-b49e-1f7b7cc07cd8",
+      "name": "Remove data",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Set min/max wait times (in seconds) for each wait point\nconst waitConfigs = {\n  wait1: { min: 5, max: 30 },   // First wait node\n  wait2: { min: 5, max: 30 },  // Second wait node\n};\n\n// Generate random times for each wait point\nconst waitTimes = {};\nfor (const [key, config] of Object.entries(waitConfigs)) {\n  waitTimes[key] = Math.floor(\n    Math.random() * (config.max - config.min + 1)\n  ) + config.min;\n}\n\nreturn [{ json: { ...$(\"Loop Over Items\").first().json } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        1616
+      ],
+      "id": "61897ccb-9a1f-4fe1-b6ff-fac1d0cf1b43",
+      "name": "Random time1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "LinkedIn Profile",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Profile"
+        },
+        "limit": "={{ 50 * $json.worker }}",
+        "where": {
+          "values": [
+            {
+              "column": "check",
+              "condition": "IS NULL"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "created_at"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1568,
+        1952
+      ],
+      "id": "c0b9348c-444b-487f-87b9-035be7a626dd",
+      "name": "Get profiles from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "zMYtLOZWmNsWQuBV",
+          "name": "Postgres Account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "88988711-f3d7-40b6-9834-bbf89b195d2d",
+              "leftValue": "={{ $input.item.json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        1520
+      ],
+      "id": "2fccaacb-6fbf-412a-ba36-57fbc9d1ba79",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "list",
+          "cachedResultName": "Lead"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "publicUrl",
+              "value": "={{ $json.public_profile_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        1616
+      ],
+      "id": "281925d8-2b1b-45f2-a5e3-985150b7fadf",
+      "name": "Filter Leads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "zMYtLOZWmNsWQuBV",
+          "name": "Postgres Account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "LinkedIn Profile",
+          "mode": "list",
+          "cachedResultName": "LinkedIn Profile"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "check": true,
+            "id": "={{ $json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": true,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "industry",
+              "displayName": "industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_name",
+              "displayName": "last_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "member_urn",
+              "displayName": "member_urn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "public_identifier",
+              "displayName": "public_identifier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "public_profile_url",
+              "displayName": "public_profile_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "profile_url",
+              "displayName": "profile_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "profile_picture_url",
+              "displayName": "profile_picture_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "profile_picture_url_large",
+              "displayName": "profile_picture_url_large",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "network_distance",
+              "displayName": "network_distance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pending_invitation",
+              "displayName": "pending_invitation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_positions",
+              "displayName": "current_positions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "open_profile",
+              "displayName": "open_profile",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "premium",
+              "displayName": "premium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "recently_hired",
+              "displayName": "recently_hired",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "shared_connections_count",
+              "displayName": "shared_connections_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "recent_posts_count",
+              "displayName": "recent_posts_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "check",
+              "displayName": "check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -896,
+        1616
+      ],
+      "id": "7d2fa86f-6e82-4f2c-846c-2e432322c519",
+      "name": "Mark Leads as Processed",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "zMYtLOZWmNsWQuBV",
+          "name": "Postgres Account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "Lead",
+          "mode": "list",
+          "cachedResultName": "Lead"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "check",
+              "displayName": "check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "firstName",
+              "displayName": "firstName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lastName",
+              "displayName": "lastName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "headline",
+              "displayName": "headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "skills",
+              "displayName": "skills",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "position",
+              "displayName": "position",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "array",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "publicUrl",
+              "displayName": "publicUrl",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "companyName",
+              "displayName": "companyName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "companyWebsite",
+              "displayName": "companyWebsite",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "jobTitle",
+              "displayName": "jobTitle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1792,
+        1856
+      ],
+      "id": "a189a0bf-7fe0-4e35-bf4e-f3f2d36d7e35",
+      "name": "Insert Lead in a table",
+      "credentials": {
+        "postgres": {
+          "id": "zMYtLOZWmNsWQuBV",
+          "name": "Postgres Account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "=b00f_AmiQW--8xMCOt6bKg",
+              "type": "string"
+            },
+            {
+              "id": "86a8e763-c26e-4a74-bfe4-58b69642b699",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "79483203-66db-492f-84d6-53f5306fd7c1",
+              "name": "=Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9312e5a2-cd0d-4fc9-9292-ea3ee528e5c5",
+              "name": "=Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            },
+            {
+              "id": "8b36012e-a6db-4f15-b47d-ac0bcdf9f2a5",
+              "name": "account",
+              "value": "Andrew",
+              "type": "string"
+            },
+            {
+              "id": "a6590f0a-14c5-4397-9bae-99f87a760b6e",
+              "name": "worker",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2016,
+        1616
+      ],
+      "id": "8420caab-21d0-4d4b-8418-ab785194f32d",
+      "name": "Andrew account_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9be50b6-7822-4c85-93ab-c8c9391be083",
+              "name": "account_id",
+              "value": "ysO08LpxQrC7CBIEQFFp1A",
+              "type": "string"
+            },
+            {
+              "id": "d630f760-b6b2-4f43-a5d4-aff0f3871d90",
+              "name": "Day of month",
+              "value": "={{ $json['Day of month'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98e50da1-0b74-4f63-aea5-d9ce4b56445a",
+              "name": "hour",
+              "value": "={{ $json.Hour }}",
+              "type": "string"
+            },
+            {
+              "id": "829eb6fb-a88e-4fba-824b-a86e27d66b55",
+              "name": "Minute",
+              "value": "={{ $json.Minute }}",
+              "type": "string"
+            },
+            {
+              "id": "9cedb27d-2e7a-4406-b256-5787c498a295",
+              "name": "worker",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "9705e84b-7509-4f5d-bd8d-10c910b521d5",
+              "name": "account",
+              "value": "Emily",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2016,
+        1808
+      ],
+      "id": "5a570de8-8c3c-4223-9342-c1900c0addb4",
+      "name": "Emily account_id"
+    },
+    {
+      "parameters": {
+        "chatId": "7625540731",
+        "text": "={{ '<code>Buyer-A-2</code> Started - <code>' + $json.account + ' Account</code> Time: ' +  $json['Day of month'] + \"-\" + $json.hour + \"-\" + $json.Minute }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        1760
+      ],
+      "id": "5f953df6-0acd-4fab-ab06-979df6f7171f",
+      "name": "Start the Worker",
+      "webhookId": "ec6e1b09-42dd-4e73-a93d-40b4c36f9180",
+      "credentials": {
+        "telegramApi": {
+          "id": "Hzgd7Vgq0Si51wMH",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input\n  .all()\n  .filter(item => !item.json.check)\n  .slice(50 * ($('Set account_id').first().json.worker - 1), 50 * ($('Set account_id').first().json.worker));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        1952
+      ],
+      "id": "076b1dd6-1b2f-417e-a959-7cee061e16a8",
+      "name": "Filter & Chunk Items"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 45
+            },
+            {
+              "triggerAtHour": 10
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 12,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 13,
+              "triggerAtMinute": 45
+            },
+            {
+              "triggerAtHour": 15
+            },
+            {
+              "triggerAtHour": 16,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 17,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 45
+            },
+            {
+              "triggerAtHour": 20
+            },
+            {
+              "triggerAtHour": 21,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2240,
+        1808
+      ],
+      "id": "d0b83381-f11d-4946-a275-b943945d8c09",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            },
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 10,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 11,
+              "triggerAtMinute": 45
+            },
+            {
+              "triggerAtHour": 13
+            },
+            {
+              "triggerAtHour": 14,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 15,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 16,
+              "triggerAtMinute": 45
+            },
+            {
+              "triggerAtHour": 18
+            },
+            {
+              "triggerAtHour": 19,
+              "triggerAtMinute": 15
+            },
+            {
+              "triggerAtHour": 20,
+              "triggerAtMinute": 30
+            },
+            {
+              "triggerAtHour": 21,
+              "triggerAtMinute": 45
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2240,
+        2000
+      ],
+      "id": "56f16276-9204-454a-b056-12f9164e489e",
+      "name": "Schedule Trigger2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Retrieve the user profile": {
+      "main": [
+        [
+          {
+            "node": "Profile Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve the company profile": {
+      "main": [
+        [
+          {
+            "node": "Wait5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait4": {
+      "main": [
+        [
+          {
+            "node": "Retrieve the company profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait5": {
+      "main": [
+        [
+          {
+            "node": "Retrieve the user profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random time": {
+      "main": [
+        [
+          {
+            "node": "Wait4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Profile Fields": {
+      "main": [
+        [
+          {
+            "node": "Clean data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean data": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Leads as Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Israel account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Andrew account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set account_id": {
+      "main": [
+        [
+          {
+            "node": "Get profiles from a table",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Start the Worker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check the duplication": {
+      "main": [
+        [
+          {
+            "node": "Random time",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Remove data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Random time1": {
+      "main": [
+        [
+          {
+            "node": "Filter Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get profiles from a table": {
+      "main": [
+        [
+          {
+            "node": "Filter & Chunk Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Insert Lead in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Leads": {
+      "main": [
+        [
+          {
+            "node": "Check the duplication",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Leads as Processed": {
+      "main": [
+        [
+          {
+            "node": "Random time1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Lead in a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Andrew account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emily account_id": {
+      "main": [
+        [
+          {
+            "node": "Set account_id",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Start the Worker": {
+      "main": [
+        []
+      ]
+    },
+    "Filter & Chunk Items": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Emily account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Israel account_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "d8778112-cd77-4e0d-8c5e-b85e306ce643",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf120ca0326fba41d4221ee0c421c0c2c8d9d27024ef91245df4c38c9cc2cf2b"
+  },
+  "id": "X8zmCkAJviIYzdLc",
+  "tags": []
+}
